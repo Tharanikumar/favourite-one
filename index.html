@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evermine — Just You, Me & Our Story</title>
+  <meta name="description" content="A romantic love story, memory box, anniversary timer, and interactive couple showcase built with love.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Sacramento&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Floating Heart Particles Canvas Container -->
+  <div id="hearts-container" class="hearts-layer"></div>
+
+  <!-- Background Ambient Glow -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="app-wrapper">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="navbar">
+      <div class="nav-brand" onclick="scrollToTop()">
+        <div class="brand-icon">
+          <i class="fa-solid fa-heart pulse"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Evermine</span>
+          <span class="brand-tagline">Just you, me & our story</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#hero" class="nav-link active"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+        <a href="#journey" class="nav-link"><i class="fa-solid fa-book-open"></i> <span>Our Story</span></a>
+        <a href="#memories" class="nav-link"><i class="fa-solid fa-images"></i> <span>Memories</span></a>
+        <a href="#favorites" class="nav-link"><i class="fa-solid fa-star"></i> <span>Favorites</span></a>
+        <a href="#music-player" class="nav-link"><i class="fa-solid fa-music"></i> <span>Playlist</span></a>
+        <a href="#reasons" class="nav-link"><i class="fa-solid fa-heart-circle-check"></i> <span>Reasons</span></a>
+        <a href="#surprises" class="nav-link"><i class="fa-solid fa-gift"></i> <span>Surprises</span></a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-for-you" onclick="openLoveLetterModal()">
+          <span>For You</span> <i class="fa-solid fa-heart"></i>
+        </button>
+        <button class="btn btn-icon-only" onclick="openSettingsModal()" title="Customize Settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero-section">
+      <div class="hero-container">
+        
+        <!-- Hero Text Left -->
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> Forever & Always
+          </div>
+          <h1 class="hero-title">
+            You are my <br>
+            <span class="script-font text-gradient">Today & All of my Tomorrows</span>
+          </h1>
+          <p class="hero-subtitle">
+            Thank you for being the most beautiful part of my life and making every single day so special. This little space is crafted just for you.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#journey" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-heart-pulse"></i> Explore Our Story
+            </a>
+            
+            <button class="btn btn-outline btn-lg song-toggle-btn" id="hero-song-btn" onclick="toggleMainSong()">
+              <div class="play-icon-wrap" id="play-icon-wrap">
+                <i class="fa-solid fa-play" id="main-play-icon"></i>
+              </div>
+              <div class="song-info-text">
+                <span class="song-label">Our Special Song</span>
+                <span class="song-title" id="active-song-title">Perfect — Ed Sheeran</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Photo Right -->
+        <div class="hero-visual">
+          <div class="photo-frame-wrapper">
+            <div class="main-photo-card">
+              <img src="assets/hero_couple.png" alt="Couple Sunset View" class="hero-img">
+              <div class="photo-overlay-glow"></div>
+            </div>
+            
+            <!-- Sticky Polaroid Note -->
+            <div class="sticky-note" onclick="triggerConfetti()">
+              <p class="handwritten-text">I still fall for you everyday. ❤️</p>
+              <span class="tape"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wave Separator with Heart Badge -->
+      <div class="hero-wave">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,64C672,53,768,43,864,48C960,53,1056,75,1152,80C1248,85,1344,75,1392,69.3L1440,64L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z" fill="#ffffff"></path>
+        </svg>
+        <div class="wave-heart-badge" onclick="triggerHeartBurst(event)">
+          <i class="fa-solid fa-heart"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUB-NAV CATEGORY CARDS -->
+    <section class="category-strip">
+      <div class="category-grid">
+        <a href="#journey" class="cat-card">
+          <div class="cat-icon bg-purple"><i class="fa-solid fa-book-bookmark"></i></div>
+          <div class="cat-info">
+            <h4>Our Story</h4>
+            <p>How it all began</p>
+          </div>
+        </a>
+
+        <a href="#memories" class="cat-card">
+          <div class="cat-icon bg-pink"><i class="fa-solid fa-images"></i></div>
+          <div class="cat-info">
+            <h4>Memories</h4>
+            <p>Moments we cherish</p>
+          </div>
+        </a>
+
+        <a href="#favorites" class="cat-card">
+          <div class="cat-icon bg-gold"><i class="fa-solid fa-star"></i></div>
+          <div class="cat-info">
+            <h4>Favorites</h4>
+            <p>All your favorites</p>
+          </div>
+        </a>
+
+        <a href="#music-player" class="cat-card">
+          <div class="cat-icon bg-green"><i class="fa-solid fa-music"></i></div>
+          <div class="cat-info">
+            <h4>Playlist</h4>
+            <p>Songs for us</p>
+          </div>
+        </a>
+
+        <a href="#surprises" class="cat-card">
+          <div class="cat-icon bg-blue"><i class="fa-solid fa-gift"></i></div>
+          <div class="cat-info">
+            <h4>Surprises</h4>
+            <p>Little surprises</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- MAIN 3-COLUMN DASHBOARD GRID -->
+    <section class="dashboard-grid-section">
+      <div class="dashboard-grid">
+
+        <!-- COLUMN 1: OUR JOURNEY TIMELINE -->
+        <div class="dash-card journey-card" id="journey">
+          <div class="dash-card-header">
+            <h3>Our Journey <i class="fa-regular fa-heart text-pink"></i></h3>
+            <span class="badge-count" id="timeline-count">5 Milestones</span>
+          </div>
+
+          <div class="timeline-vertical" id="timeline-container">
+            <!-- Item 1 -->
+            <div class="timeline-item">
+              <div class="timeline-icon icon-purple"><i class="fa-solid fa-heart"></i></div>
+              <div class="timeline-content">
+                <span class="timeline-date">14 Feb 2023</span>
+                <h4>We Met</h4>
+                <p>The day our story officially began with a shy smile.</p>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="timeline-item">
+              <div class="timeline-icon icon-pink"><i class="fa-solid fa-comments"></i></div>
+              <div class="timeline-content">
+                <span class="timeline-date">28 Feb 2023</span>
+                <h4>First Conversation</h4>
+                <p>That late night conversation that never seemed to end.</p>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="timeline-item">
+              <div class="timeline-icon icon-amber"><i class="fa-solid fa-face-smile-beam"></i></div>
+              <div class="timeline-content">
+                <span class="timeline-date">20 Mar 2023</span>
+                <h4>First Date</h4>
+                <p>A full day of non-stop laughter, coffee, and butterflies.</p>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="timeline-item">
+              <div class="timeline-icon icon-emerald"><i class="fa-solid fa-camera-retro"></i></div>
+              <div class="timeline-content">
+                <span class="timeline-date">15 May 2023</span>
+                <h4>Trip Together</h4>
+                <p>Exploring new places and creating memories we'll cherish forever.</p>
+              </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="timeline-item">
+              <div class="timeline-icon icon-rose"><i class="fa-solid fa-ring"></i></div>
+              <div class="timeline-content">
+                <span class="timeline-date">14 Feb 2024</span>
+                <h4>Still Together</h4>
+                <p>Looking forward to a lifetime full of tomorrows with you.</p>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-light btn-block" onclick="openFullTimelineModal()">
+            View Full Timeline <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- COLUMN 2: RECENT MEMORIES GALLERY -->
+        <div class="dash-card memories-card" id="memories">
+          <div class="dash-card-header">
+            <h3>Recent Memories <i class="fa-regular fa-heart text-pink"></i></h3>
+            <a href="javascript:void(0)" class="link-action" onclick="openGalleryModal()">See all &gt;</a>
+          </div>
+
+          <div class="memories-photo-grid">
+            <div class="photo-tile large" onclick="openLightbox('assets/hero_couple.png', 'Golden Hour Sunset', 'Watching the city lights come alive together.')">
+              <img src="assets/hero_couple.png" alt="Memory Sunset">
+              <div class="photo-hover-tag"><i class="fa-solid fa-heart"></i> Golden Hour</div>
+            </div>
+
+            <div class="photo-tile" onclick="openLightbox('assets/mem_coffee.png', 'Morning Coffee Dates', 'Two cozy mugs, heart latte art, and infinite talks.')">
+              <img src="assets/mem_coffee.png" alt="Memory Coffee">
+              <div class="photo-hover-tag"><i class="fa-solid fa-mug-hot"></i> Coffee Date</div>
+            </div>
+
+            <div class="photo-tile" onclick="openLightbox('assets/mem_fairy_lights.png', 'Fairy Light Memories', 'Polaroid photos hanging with cozy glowing lights.')">
+              <img src="assets/mem_fairy_lights.png" alt="Memory Lights">
+              <div class="photo-hover-tag"><i class="fa-solid fa-lightbulb"></i> Cozy Vibes</div>
+            </div>
+
+            <div class="photo-tile" onclick="openLightbox('assets/memory_jar.png', 'Our Jar of Love Notes', 'Every sweet memory stored safely in our hearts.')">
+              <img src="assets/memory_jar.png" alt="Memory Jar">
+              <div class="photo-hover-tag"><i class="fa-solid fa-jar"></i> Love Jar</div>
+            </div>
+
+            <div class="photo-tile" onclick="openLightbox('assets/love_note.png', 'Love Letters', 'Special notes written straight from the heart.')">
+              <img src="assets/love_note.png" alt="Love Note">
+              <div class="photo-hover-tag"><i class="fa-solid fa-envelope"></i> Letter</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 3: YOUR FAVORITES -->
+        <div class="dash-card favorites-card" id="favorites">
+          <div class="dash-card-header">
+            <h3>Your Favorites <i class="fa-regular fa-heart text-pink"></i></h3>
+            <a href="javascript:void(0)" class="link-action" onclick="openFavoritesModal()">See all &gt;</a>
+          </div>
+
+          <ul class="favorites-list" id="favorites-list-preview">
+            <li class="fav-item">
+              <div class="fav-icon bg-rose"><i class="fa-solid fa-utensils"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Food</span>
+                <span class="fav-value">Pasta, Biryani, Dark Chocolate</span>
+              </div>
+            </li>
+
+            <li class="fav-item">
+              <div class="fav-icon bg-purple"><i class="fa-solid fa-film"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Movie</span>
+                <span class="fav-value">The Notebook, La La Land</span>
+              </div>
+            </li>
+
+            <li class="fav-item">
+              <div class="fav-icon bg-green"><i class="fa-solid fa-music"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Song</span>
+                <span class="fav-value">Perfect — Ed Sheeran</span>
+              </div>
+            </li>
+
+            <li class="fav-item">
+              <div class="fav-icon bg-amber"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Place</span>
+                <span class="fav-value">Sunset Beach, Cozy Mountains</span>
+              </div>
+            </li>
+
+            <li class="fav-item">
+              <div class="fav-icon bg-cyan"><i class="fa-solid fa-palette"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Color</span>
+                <span class="fav-value">Lavender & Rose Gold</span>
+              </div>
+            </li>
+
+            <li class="fav-item">
+              <div class="fav-icon bg-pink"><i class="fa-solid fa-icons"></i></div>
+              <div class="fav-details">
+                <span class="fav-category">Hobby</span>
+                <span class="fav-value">Dancing, Reading, Traveling</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LIVE "TOGETHER FOR ♡" TIMER BANNER -->
+    <section class="timer-banner-section">
+      <div class="timer-banner">
+        <div class="stars-overlay"></div>
+        <div class="timer-header">
+          <h2>Together For <i class="fa-solid fa-heart pulse-fast"></i></h2>
+          <p class="timer-subtitle">Every second with you is a gift I cherish</p>
+        </div>
+
+        <div class="timer-display-grid">
+          <div class="time-box">
+            <span class="time-number" id="count-years">01</span>
+            <span class="time-label">Years</span>
+          </div>
+
+          <div class="time-divider">:</div>
+
+          <div class="time-box">
+            <span class="time-number" id="count-months">03</span>
+            <span class="time-label">Months</span>
+          </div>
+
+          <div class="time-divider">:</div>
+
+          <div class="time-box">
+            <span class="time-number" id="count-days">21</span>
+            <span class="time-label">Days</span>
+          </div>
+
+          <div class="time-divider">:</div>
+
+          <div class="time-box">
+            <span class="time-number" id="count-hours">08</span>
+            <span class="time-label">Hours</span>
+          </div>
+
+          <div class="time-divider">:</div>
+
+          <div class="time-box">
+            <span class="time-number" id="count-minutes">45</span>
+            <span class="time-label">Minutes</span>
+          </div>
+
+          <div class="time-divider">:</div>
+
+          <div class="time-box highlight">
+            <span class="time-number" id="count-seconds">12</span>
+            <span class="time-label">Seconds</span>
+          </div>
+        </div>
+
+        <div class="timer-footer">
+          <span class="start-date-info" id="display-start-date"><i class="fa-regular fa-calendar-check"></i> Since February 14, 2023</span>
+          <button class="btn btn-sm btn-outline-light" onclick="openSettingsModal()"><i class="fa-solid fa-pen-to-square"></i> Change Date</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM INTERACTIVE WIDGETS GRID -->
+    <section class="interactive-widgets-section" id="surprises">
+      <div class="widgets-grid">
+
+        <!-- WIDGET 1: MEMORY JAR -->
+        <div class="widget-card memory-jar-card">
+          <div class="widget-header">
+            <h3>Memory Jar</h3>
+            <p>Click the jar to draw a sweet random memory</p>
+          </div>
+
+          <div class="jar-graphic-wrapper" onclick="drawMemoryFromJar()">
+            <img src="assets/memory_jar.png" alt="Memory Jar" class="jar-img floating-jar">
+            <div class="jar-sparkles"></div>
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="drawMemoryFromJar()">
+            Open the Jar <i class="fa-solid fa-heart"></i>
+          </button>
+        </div>
+
+        <!-- WIDGET 2: REASONS I LOVE YOU -->
+        <div class="widget-card reasons-card" id="reasons">
+          <div class="widget-header">
+            <h3>Reasons I Love You <i class="fa-regular fa-heart text-pink"></i></h3>
+            <p>Just a few of the millions of reasons</p>
+          </div>
+
+          <ol class="reasons-preview-list">
+            <li>
+              <span class="reason-num">01</span>
+              <span class="reason-text">Your smile lights up my entire world instantly.</span>
+            </li>
+            <li>
+              <span class="reason-num">02</span>
+              <span class="reason-text">You understand me like no one else ever could.</span>
+            </li>
+            <li>
+              <span class="reason-num">03</span>
+              <span class="reason-text">You make every ordinary moment feel special.</span>
+            </li>
+            <li>
+              <span class="reason-num">04</span>
+              <span class="reason-text">Your warmth, kindness, and incredible heart.</span>
+            </li>
+            <li>
+              <span class="reason-num">05</span>
+              <span class="reason-text">You are simply you, and that is perfection.</span>
+            </li>
+          </ol>
+
+          <button class="btn btn-outline btn-block" onclick="openReasonsModal()">
+            See All Reasons <i class="fa-solid fa-heart-pulse"></i>
+          </button>
+        </div>
+
+        <!-- WIDGET 3: SPIN THE WHEEL MINI-GAME -->
+        <div class="widget-card wheel-card">
+          <div class="widget-header">
+            <h3>Spin the Wheel <i class="fa-solid fa-heart-circle-bolt text-pink"></i></h3>
+            <p>Spin for a romantic surprise date just for you!</p>
+          </div>
+
+          <div class="wheel-container">
+            <div class="wheel-pointer"><i class="fa-solid fa-heart"></i></div>
+            <canvas id="wheel-canvas" width="240" height="240"></canvas>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="spin-wheel-btn" onclick="spinWheel()">
+            Spin Now <i class="fa-solid fa-rotate"></i>
+          </button>
+        </div>
+
+        <!-- WIDGET 4: LOVE NOTE ENVELOPE -->
+        <div class="widget-card love-note-card">
+          <div class="widget-header">
+            <h3>Love Note</h3>
+            <p>A message straight from my heart to yours</p>
+          </div>
+
+          <div class="envelope-graphic-wrapper" onclick="openLoveLetterModal()">
+            <img src="assets/love_note.png" alt="Love Envelope" class="envelope-img">
+            <div class="note-preview-box">
+              <p class="preview-text">"Thank you for being the most beautiful part of my life..."</p>
+            </div>
+          </div>
+
+          <button class="btn btn-outline btn-block" onclick="openLoveLetterModal()">
+            Read Full Letter <i class="fa-solid fa-envelope-open-text"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MUSIC PLAYER CONTROL BAR -->
+    <section class="floating-music-bar-section" id="music-player">
+      <div class="music-bar-card">
+        <div class="music-track-info">
+          <div class="disc-animation" id="music-disc">
+            <i class="fa-solid fa-compact-disc"></i>
+          </div>
+          <div class="track-text">
+            <span class="now-playing-label"><i class="fa-solid fa-wave-square"></i> NOW PLAYING</span>
+            <span class="track-title" id="bar-track-title">Perfect — Ed Sheeran</span>
+            <span class="track-artist">Acoustic Romantic Melody</span>
+          </div>
+        </div>
+
+        <div class="music-controls">
+          <button class="btn-music-ctrl" onclick="prevTrack()" title="Previous Track"><i class="fa-solid fa-backward-step"></i></button>
+          <button class="btn-music-ctrl main-play-btn" id="bar-play-btn" onclick="toggleMainSong()" title="Play / Pause"><i class="fa-solid fa-play"></i></button>
+          <button class="btn-music-ctrl" onclick="nextTrack()" title="Next Track"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+
+        <div class="music-volume">
+          <i class="fa-solid fa-volume-high"></i>
+          <input type="range" id="volume-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-heart"><i class="fa-solid fa-heart pulse"></i></div>
+        <p class="footer-text">Made with ❤️ just for you</p>
+        <p class="footer-subtext">You are my today and all of my tomorrows.</p>
+        <button class="back-to-top" onclick="scrollToTop()" title="Back to top">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MODAL 1: LOVE LETTER (TYPEWRITER EFFECT) -->
+  <div class="modal-backdrop" id="modal-love-letter">
+    <div class="modal-box modal-letter">
+      <button class="modal-close" onclick="closeModal('modal-love-letter')">&times;</button>
+      <div class="letter-container">
+        <div class="letter-header">
+          <i class="fa-solid fa-envelope-open-text text-pink"></i>
+          <h3>A Letter For You ❤️</h3>
+        </div>
+        <div class="letter-body">
+          <div id="typewriter-text" class="handwritten-font"></div>
+        </div>
+        <div class="letter-footer">
+          <button class="btn btn-primary" onclick="closeModal('modal-love-letter')">Forever Yours ❤️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: MEMORY DRAW RESULT -->
+  <div class="modal-backdrop" id="modal-memory-draw">
+    <div class="modal-box modal-sweet">
+      <button class="modal-close" onclick="closeModal('modal-memory-draw')">&times;</button>
+      <div class="draw-content text-center">
+        <div class="draw-icon"><i class="fa-solid fa-jar text-pink"></i></div>
+        <span class="modal-badge">Memory Jar Note</span>
+        <h3 id="draw-memory-title">A Cherished Moment</h3>
+        <div class="memory-paper-note">
+          <p id="draw-memory-text">"Remember when we spent hours talking under the stars?"</p>
+          <span class="note-date" id="draw-memory-date">♥ Special Memory</span>
+        </div>
+        <button class="btn btn-primary" onclick="drawMemoryFromJar()"><i class="fa-solid fa-rotate"></i> Draw Another Memory</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: SPIN THE WHEEL WINNER -->
+  <div class="modal-backdrop" id="modal-wheel-winner">
+    <div class="modal-box modal-sweet">
+      <button class="modal-close" onclick="closeModal('modal-wheel-winner')">&times;</button>
+      <div class="winner-content text-center">
+        <div class="winner-confetti"><i class="fa-solid fa-trophy text-gold"></i></div>
+        <span class="modal-badge">Surprise Date Coupon!</span>
+        <h3>You Won! 🎉</h3>
+        <div class="coupon-box">
+          <h2 id="winner-prize-name">Romantic Candlelight Dinner</h2>
+          <p>Redeemable anytime by you! ❤️</p>
+          <span class="coupon-code">CODE: LOVE-FOREVER</span>
+        </div>
+        <button class="btn btn-primary" onclick="closeModal('modal-wheel-winner')">Claim Reward ♥</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: PHOTO LIGHTBOX -->
+  <div class="modal-backdrop" id="modal-lightbox">
+    <div class="modal-box modal-lightbox-box">
+      <button class="modal-close" onclick="closeModal('modal-lightbox')">&times;</button>
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-img" src="" alt="Memory Full">
+      </div>
+      <div class="lightbox-caption">
+        <h4 id="lightbox-title">Photo Title</h4>
+        <p id="lightbox-desc">Photo description goes here.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: FULL TIMELINE VIEW & ADD -->
+  <div class="modal-backdrop" id="modal-timeline">
+    <div class="modal-box modal-wide">
+      <button class="modal-close" onclick="closeModal('modal-timeline')">&times;</button>
+      <h3>Our Full Journey Timeline ❤️</h3>
+      <div class="timeline-vertical full-modal-timeline" id="full-timeline-list">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-actions-bar">
+        <button class="btn btn-primary" onclick="promptAddMilestone()"><i class="fa-solid fa-plus"></i> Add New Milestone</button>
+        <button class="btn btn-outline" onclick="closeModal('modal-timeline')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: REASONS LIST -->
+  <div class="modal-backdrop" id="modal-reasons">
+    <div class="modal-box modal-wide">
+      <button class="modal-close" onclick="closeModal('modal-reasons')">&times;</button>
+      <h3>Reasons Why I Love You ❤️</h3>
+      <div class="reasons-full-grid" id="full-reasons-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 7: FAVORITES EDITOR -->
+  <div class="modal-backdrop" id="modal-favorites">
+    <div class="modal-box modal-wide">
+      <button class="modal-close" onclick="closeModal('modal-favorites')">&times;</button>
+      <h3>Our Favorite Things ❤️</h3>
+      <div class="favorites-editor-grid" id="full-favorites-grid">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-actions-bar">
+        <button class="btn btn-primary" onclick="saveFavorites()"><i class="fa-solid fa-check"></i> Save Favorites</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 8: SETTINGS & CUSTOMIZATION -->
+  <div class="modal-backdrop" id="modal-settings">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modal-settings')">&times;</button>
+      <h3>Customize Your Story ❤️</h3>
+      <form id="settings-form" onsubmit="saveSettings(event)">
+        <div class="form-group">
+          <label>Relationship Start Date & Time</label>
+          <input type="datetime-local" id="input-start-date" required>
+        </div>
+        <div class="form-group">
+          <label>Your Name / Partner's Name</label>
+          <input type="text" id="input-partner-names" placeholder="e.g. Alex & Sam">
+        </div>
+        <div class="form-group">
+          <label>Website Title</label>
+          <input type="text" id="input-site-title" placeholder="e.g. Evermine — Just You & Me">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save Changes ❤️</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APP LOGIC SCRIPT -->
+  <script src="js/app.js"></script>
+</body>
+</html>
