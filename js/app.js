@@ -4,23 +4,23 @@
 
 // STATE MANAGEMENT & LOCAL STORAGE SETUP
 const DEFAULT_STATE = {
-  startDate: '2023-02-14T00:00:00',
-  partnerNames: 'Alex & Sam',
-  siteTitle: 'Evermine — Just You, Me & Our Story',
+  startDate: '2023-09-12T00:00:00',
+  partnerNames: 'Tharani & Surya',
+  siteTitle: 'Evermine — Tharani & Surya',
   favorites: [
     { cat: 'Food', val: 'Pasta, Biryani, Dark Chocolate', icon: 'fa-utensils', bg: 'bg-rose' },
     { cat: 'Movie', val: 'The Notebook, La La Land', icon: 'fa-film', bg: 'bg-purple' },
-    { cat: 'Song', val: 'Perfect — Ed Sheeran', icon: 'fa-music', bg: 'bg-green' },
+    { cat: 'Song', val: 'Kannukkullai Unnai Vaithai — Pennin Manathai Thottu', icon: 'fa-music', bg: 'bg-green' },
     { cat: 'Place', val: 'Sunset Beach, Cozy Mountains', icon: 'fa-location-dot', bg: 'bg-amber' },
     { cat: 'Color', val: 'Lavender & Rose Gold', icon: 'fa-palette', bg: 'bg-cyan' },
     { cat: 'Hobby', val: 'Dancing, Reading, Traveling', icon: 'fa-icons', bg: 'bg-pink' }
   ],
   milestones: [
-    { date: '14 Feb 2023', title: 'We Met', desc: 'The day our story officially began with a shy smile.', icon: 'fa-heart', bg: 'icon-purple' },
-    { date: '28 Feb 2023', title: 'First Conversation', desc: 'That late night conversation that never seemed to end.', icon: 'fa-comments', bg: 'icon-pink' },
-    { date: '20 Mar 2023', title: 'First Date', desc: 'A full day of non-stop laughter, coffee, and butterflies.', icon: 'fa-face-smile-beam', bg: 'icon-amber' },
-    { date: '15 May 2023', title: 'Trip Together', desc: 'Exploring new places and creating memories we cherish forever.', icon: 'fa-camera-retro', bg: 'icon-emerald' },
-    { date: '14 Feb 2024', title: 'Still Together', desc: 'Looking forward to a lifetime full of tomorrows with you.', icon: 'fa-ring', bg: 'icon-rose' }
+    { date: '12 Sep 2023', title: 'We Met', desc: 'The day our story officially began with a shy smile.', icon: 'fa-heart', bg: 'icon-purple' },
+    { date: '1 Jan 2024', title: 'First Conversation', desc: 'That late night conversation that never seemed to end.', icon: 'fa-comments', bg: 'icon-pink' },
+    { date: '18 Apr 2024', title: 'First Date', desc: 'A full day of non-stop laughter, coffee, and butterflies.', icon: 'fa-face-smile-beam', bg: 'icon-amber' },
+    { date: '19 Sep 2025', title: 'Trip Together', desc: 'Exploring new places and creating memories we cherish forever.', icon: 'fa-camera-retro', bg: 'icon-emerald' },
+    { date: '14 Aug 2026', title: 'Still Together', desc: 'Looking forward to a lifetime full of tomorrows with you.', icon: 'fa-ring', bg: 'icon-rose' }
   ]
 };
 
@@ -29,7 +29,23 @@ let appState = loadState();
 function loadState() {
   const saved = localStorage.getItem('evermine_state');
   if (saved) {
-    try { return JSON.parse(saved); } catch (e) { console.error(e); }
+    try {
+      const parsed = JSON.parse(saved);
+      // Migrate old default state if found
+      if (parsed.startDate === '2023-02-14T00:00:00' || (parsed.milestones && parsed.milestones[0]?.date === '14 Feb 2023')) {
+        parsed.startDate = DEFAULT_STATE.startDate;
+        parsed.milestones = DEFAULT_STATE.milestones;
+        localStorage.setItem('evermine_state', JSON.stringify(parsed));
+      }
+      if (parsed.favorites) {
+        const songFav = parsed.favorites.find(f => f.cat === 'Song');
+        if (songFav && (songFav.val.includes('Ed Sheeran') || songFav.val.includes('Perfect'))) {
+          songFav.val = 'Kannukkullai Unnai Vaithai — Pennin Manathai Thottu';
+          localStorage.setItem('evermine_state', JSON.stringify(parsed));
+        }
+      }
+      return parsed;
+    } catch (e) { console.error(e); }
   }
   return DEFAULT_STATE;
 }
@@ -43,11 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveTimer();
   initSpinWheel();
   initClickHearts();
+  initFallingHeartsBackground();
   initAudioSynthesizer();
   renderTimelineList();
   renderFavoritesList();
   renderReasonsGrid();
   updateUIFromState();
+  initDailyQuotesEngine();
 });
 
 // UPDATE UI FROM STATE
@@ -58,6 +76,11 @@ function updateUIFromState() {
   const displayDateEl = document.getElementById('display-start-date');
   if (displayDateEl) {
     displayDateEl.innerHTML = `<i class="fa-regular fa-calendar-check"></i> Since ${formattedDate}`;
+  }
+
+  const namesHeaderEl = document.getElementById('header-partner-names');
+  if (namesHeaderEl && appState.partnerNames) {
+    namesHeaderEl.textContent = `${appState.partnerNames} — Our Love Story`;
   }
 
   const startDateInput = document.getElementById('input-start-date');
@@ -252,7 +275,7 @@ function drawMemoryFromJar() {
 }
 
 // 4. LOVE LETTER TYPEWRITER EFFECT
-const LOVE_LETTER_TEXT = `My Dearest,
+const LOVE_LETTER_TEXT = `My Dearest Surya,
 
 From the very first moment our eyes met, I knew there was something magical about you. You brought warmth into my life, turned simple days into unforgettable adventures, and showed me what true love really feels like.
 
@@ -261,7 +284,7 @@ Thank you for being my listener, my best friend, my favorite laughter, and my sa
 I still fall for you every single day. Here's to us, our journey, and all of our tomorrows.
 
 Forever & Always Yours,
-With all my heart ❤️`;
+Tharani ❤️`;
 
 let typewriterIndex = 0;
 let typewriterTimer = null;
@@ -286,21 +309,42 @@ function openLoveLetterModal() {
   }, 35);
 }
 
-// 5. AUDIO SYNTHESIZER ENGINE (ROMANTIC MELODY WEB AUDIO API)
+// 5. AUDIO SYNTHESIZER & MULTI-TRACK PLAYLIST ENGINE
 let audioCtx = null;
 let isAudioPlaying = false;
 let melodyInterval = null;
 let masterVolume = 0.8;
 
+const PLAYLIST = [
+  {
+    title: 'Kannukkullai Unnai Vaithai',
+    artist: 'Pennin Manathai Thottu (Unni Menon)',
+    src: 'assets/kannukkullai_unnai_vaithai.m4a'
+  },
+  {
+    title: 'Poove Mudhal Poove (Male)',
+    artist: 'Kadhal Kondein (Yuvan Shankar Raja)',
+    src: 'assets/poove_mudhal_poove.m4a'
+  },
+  {
+    title: 'Ennai Thaalattum',
+    artist: 'Unnidathil Ennai Koduthen (S.A. Rajkumar)',
+    src: 'assets/ennai_thaalattum.m4a'
+  }
+];
+
+let currentTrackIndex = 0;
+
+// Signature notes for "Kannukkullai Unnai Vaithai" synth fallback
 const ROMANTIC_NOTES = [
-  261.63, 329.63, 392.00, 523.25, // C4, E4, G4, C5
-  220.00, 261.63, 329.63, 440.00, // A3, C4, E4, A4
-  174.61, 220.00, 261.63, 349.23, // F3, A3, C4, F4
-  196.00, 246.94, 293.66, 392.00  // G3, B3, D4, G4
+  392.00, 440.00, 523.25, 587.33, 659.25, 587.33, 523.25, 440.00,
+  392.00, 329.63, 392.00, 440.00, 523.25, 392.00, 329.63, 293.66,
+  261.63, 329.63, 392.00, 523.25, 659.25, 587.33, 523.25, 440.00,
+  392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 659.25, 523.25
 ];
 
 function initAudioSynthesizer() {
-  // Lazy init on first user click
+  // Lazy init on first user interaction
 }
 
 function playSynthNote(freq, duration = 1.2) {
@@ -318,7 +362,7 @@ function playSynthNote(freq, duration = 1.2) {
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
   gain.gain.setValueAtTime(0, audioCtx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.15 * masterVolume, audioCtx.currentTime + 0.1);
+  gain.gain.linearRampToValueAtTime(0.18 * masterVolume, audioCtx.currentTime + 0.1);
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
 
   osc.connect(gain);
@@ -328,108 +372,230 @@ function playSynthNote(freq, duration = 1.2) {
   osc.stop(audioCtx.currentTime + duration);
 }
 
+function loadTrack(index) {
+  currentTrackIndex = (index + PLAYLIST.length) % PLAYLIST.length;
+  const track = PLAYLIST[currentTrackIndex];
+  
+  const barTitle = document.getElementById('bar-track-title');
+  const barArtist = document.getElementById('bar-track-artist');
+  const activeTitle = document.getElementById('active-song-title');
+  const audioEl = document.getElementById('audio-element');
+
+  if (barTitle) barTitle.textContent = track.title;
+  if (barArtist) barArtist.textContent = track.artist;
+  if (activeTitle) activeTitle.textContent = track.title;
+
+  if (audioEl) {
+    audioEl.src = track.src;
+    audioEl.load();
+  }
+
+  // Update playlist items UI active state
+  const container = document.getElementById('playlist-container');
+  if (container) {
+    const items = container.querySelectorAll('.playlist-item');
+    items.forEach((item, idx) => {
+      if (idx === currentTrackIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+}
+
+function selectTrack(index) {
+  loadTrack(index);
+  const audioEl = document.getElementById('audio-element');
+  const mainIcon = document.getElementById('main-play-icon');
+  const barPlayBtn = document.getElementById('bar-play-btn');
+  const disc = document.getElementById('music-disc');
+
+  isAudioPlaying = true;
+  if (mainIcon) mainIcon.className = 'fa-solid fa-pause';
+  if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+  if (disc) disc.classList.add('playing');
+
+  if (audioEl) {
+    audioEl.volume = masterVolume;
+    audioEl.play().catch(err => {
+      console.log('Audio file play fallback to synth:', err);
+      startRomanticArpeggio();
+    });
+  }
+}
+
 function toggleMainSong() {
   isAudioPlaying = !isAudioPlaying;
 
   const mainIcon = document.getElementById('main-play-icon');
   const barPlayBtn = document.getElementById('bar-play-btn');
   const disc = document.getElementById('music-disc');
+  const audioEl = document.getElementById('audio-element');
 
   if (isAudioPlaying) {
     if (mainIcon) mainIcon.className = 'fa-solid fa-pause';
     if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     if (disc) disc.classList.add('playing');
-    startRomanticArpeggio();
+
+    if (audioEl) {
+      audioEl.volume = masterVolume;
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Playing native audio file successfully
+        }).catch(err => {
+          console.log('Audio file play fallback to synth:', err);
+          startRomanticArpeggio();
+        });
+      }
+    } else {
+      startRomanticArpeggio();
+    }
   } else {
     if (mainIcon) mainIcon.className = 'fa-solid fa-play';
     if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
     if (disc) disc.classList.remove('playing');
+
+    if (audioEl) {
+      audioEl.pause();
+    }
     stopRomanticArpeggio();
   }
 }
 
-let noteStep = 0;
-function startRomanticArpeggio() {
-  if (melodyInterval) clearInterval(melodyInterval);
-  melodyInterval = setInterval(() => {
-    const note = ROMANTIC_NOTES[noteStep % ROMANTIC_NOTES.length];
-    playSynthNote(note, 1.4);
-    noteStep++;
-  }, 450);
-}
-
-function stopRomanticArpeggio() {
-  if (melodyInterval) clearInterval(melodyInterval);
-}
-
-function setVolume(val) {
-  masterVolume = val / 100;
-}
-
 function prevTrack() {
-  toggleMainSong();
-  setTimeout(toggleMainSong, 200);
+  selectTrack((currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length);
 }
 
 function nextTrack() {
-  toggleMainSong();
-  setTimeout(toggleMainSong, 200);
+  selectTrack((currentTrackIndex + 1) % PLAYLIST.length);
 }
 
-// 6. INTERACTIVE FLOATING CLICK HEARTS
+// 6. INTERACTIVE FLOATING CLICK HEARTS & FALLING HEARTS BACKGROUND
 function initClickHearts() {
   document.addEventListener('click', (e) => {
-    // Ignore clicks on buttons/inputs to avoid clutter
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
-
-    createFloatingHeart(e.clientX, e.clientY);
+    triggerHeartBurstAt(e.clientX, e.clientY, 16);
   });
 }
 
-function createFloatingHeart(x, y) {
+function triggerHeartBurstAt(x, y, count = 16) {
   const container = document.getElementById('hearts-container');
   if (!container) return;
 
-  const heart = document.createElement('div');
-  heart.className = 'floating-heart-el';
-  heart.style.left = `${x - 12}px`;
-  heart.style.top = `${y - 12}px`;
+  const icons = ['❤️', '💖', '💕', '💗', '💓', '💞', '🌸', '✨', '🌹'];
 
-  const icons = ['❤️', '💖', '💕', '💗', '✨'];
-  heart.textContent = icons[Math.floor(Math.random() * icons.length)];
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'click-heart-particle';
+    particle.textContent = icons[Math.floor(Math.random() * icons.length)];
 
-  container.appendChild(heart);
+    // Radiate outwards 360 degrees
+    const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.4 - 0.2);
+    const distance = Math.random() * 110 + 45;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+    const rotation = (Math.random() - 0.5) * 120;
 
-  setTimeout(() => {
-    heart.remove();
-  }, 2500);
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    particle.style.setProperty('--dx', `${dx}px`);
+    particle.style.setProperty('--dy', `${dy}px`);
+    particle.style.setProperty('--rot', `${rotation}deg`);
+
+    container.appendChild(particle);
+
+    setTimeout(() => {
+      particle.remove();
+    }, 1400);
+  }
 }
 
 function triggerHeartBurstAtCenter() {
   const x = window.innerWidth / 2;
   const y = window.innerHeight / 2;
-  for (let i = 0; i < 12; i++) {
-    setTimeout(() => {
-      const offsetX = x + (Math.random() * 200 - 100);
-      const offsetY = y + (Math.random() * 200 - 100);
-      createFloatingHeart(offsetX, offsetY);
-    }, i * 80);
-  }
+  triggerHeartBurstAt(x, y, 24);
 }
 
 function triggerHeartBurst(event) {
-  event.stopPropagation();
-  const x = event.clientX;
-  const y = event.clientY;
-  for (let i = 0; i < 8; i++) {
-    setTimeout(() => {
-      createFloatingHeart(x + (Math.random() * 60 - 30), y + (Math.random() * 60 - 30));
-    }, i * 60);
-  }
+  if (event) event.stopPropagation();
+  const x = event ? event.clientX : window.innerWidth / 2;
+  const y = event ? event.clientY : window.innerHeight / 2;
+  triggerHeartBurstAt(x, y, 20);
 }
 
 function triggerConfetti() {
   triggerHeartBurstAtCenter();
+}
+
+// CONTINUOUS FALLING HEARTS BACKGROUND CANVAS ENGINE
+let fallingHeartsCanvas = null;
+let fallingHeartsCtx = null;
+let fallingHeartsList = [];
+let fallingHeartsAnimId = null;
+
+function initFallingHeartsBackground() {
+  fallingHeartsCanvas = document.getElementById('falling-hearts-canvas');
+  if (!fallingHeartsCanvas) return;
+  fallingHeartsCtx = fallingHeartsCanvas.getContext('2d');
+
+  function resizeCanvas() {
+    fallingHeartsCanvas.width = window.innerWidth;
+    fallingHeartsCanvas.height = window.innerHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const heartTypes = ['❤️', '💖', '💕', '💗', '🌸', '✨', '🌹'];
+  fallingHeartsList = [];
+
+  for (let i = 0; i < 55; i++) {
+    fallingHeartsList.push({
+      x: Math.random() * fallingHeartsCanvas.width,
+      y: Math.random() * fallingHeartsCanvas.height,
+      size: Math.random() * 16 + 12,
+      speedY: Math.random() * 1.2 + 0.6,
+      speedX: (Math.random() - 0.5) * 0.5,
+      swaySpeed: Math.random() * 0.03 + 0.01,
+      swayAngle: Math.random() * Math.PI * 2,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 1.5,
+      opacity: Math.random() * 0.55 + 0.25,
+      type: heartTypes[Math.floor(Math.random() * heartTypes.length)]
+    });
+  }
+
+  function renderFallingHearts() {
+    fallingHeartsCtx.clearRect(0, 0, fallingHeartsCanvas.width, fallingHeartsCanvas.height);
+
+    fallingHeartsList.forEach(h => {
+      h.y += h.speedY;
+      h.swayAngle += h.swaySpeed;
+      h.x += Math.sin(h.swayAngle) * 0.75;
+      h.rotation += h.rotSpeed;
+
+      if (h.y > fallingHeartsCanvas.height + 30) {
+        h.y = -30;
+        h.x = Math.random() * fallingHeartsCanvas.width;
+      }
+
+      fallingHeartsCtx.save();
+      fallingHeartsCtx.globalAlpha = h.opacity;
+      fallingHeartsCtx.translate(h.x, h.y);
+      fallingHeartsCtx.rotate((h.rotation * Math.PI) / 180);
+      fallingHeartsCtx.font = `${h.size}px sans-serif`;
+      fallingHeartsCtx.textAlign = 'center';
+      fallingHeartsCtx.textBaseline = 'middle';
+      fallingHeartsCtx.fillText(h.type, 0, 0);
+      fallingHeartsCtx.restore();
+    });
+
+    fallingHeartsAnimId = requestAnimationFrame(renderFallingHearts);
+  }
+
+  if (fallingHeartsAnimId) cancelAnimationFrame(fallingHeartsAnimId);
+  renderFallingHearts();
 }
 
 // 7. LIGHTBOX PHOTO GALLERY
@@ -607,3 +773,565 @@ function closeModal(id) {
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ==========================================================================
+   THARANI & SURYA DAY-BY-DAY QUOTES ENGINE & ANIMATED POPUP SYSTEM
+   ========================================================================== */
+
+// 365+ DAILY CURATED ROMANTIC & INSPIRATIONAL QUOTES FOR THARANI & SURYA
+const THARANI_SURYA_QUOTES = [
+  { text: "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.", author: "— Dedicated to Tharani & Surya" },
+  { text: "Whatever our souls are made of, Tharani & Surya's are the same.", author: "— Inspired by Emily Brontë" },
+  { text: "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.", author: "— Tharani & Surya's Love Story" },
+  { text: "You are my today and all of my tomorrows.", author: "— Dedicated to Tharani & Surya" },
+  { text: "If I had a flower for every time I thought of you, I could walk through my garden forever.", author: "— Forever & Always" },
+  { text: "To love and be loved by you is to feel the sun from both sides.", author: "— Tharani & Surya" },
+  { text: "I swear I couldn't love you more than I do right now, and yet I know I will tomorrow.", author: "— Daily Heartbeat Note" },
+  { text: "You are the finest, loveliest, tenderest, and most beautiful person I have ever known.", author: "— F. Scott Fitzgerald" },
+  { text: "Every love story is beautiful, but ours is my absolute favorite.", author: "— Tharani & Surya" },
+  { text: "Home is not a place, it's a person. And for me, that person is you.", author: "— For Tharani & Surya" },
+  { text: "My heart is and always will be yours.", author: "— Dedicated to Tharani & Surya" },
+  { text: "When I look into your eyes, I see the reflection of a future I always dreamed of.", author: "— Daily Inspiration" },
+  { text: "You make every single day feel like a magical celebration.", author: "— Tharani & Surya" },
+  { text: "I fell in love with the way you touched my soul without using your hands.", author: "— Deep Love Note" },
+  { text: "Together with you is my favorite place to be.", author: "— Tharani & Surya" },
+  { text: "You are my sunshine on a rainy day, my calm in every storm.", author: "— Dedicated to Tharani & Surya" },
+  { text: "I love you not only for what you are, but for what I am when I am with you.", author: "— Roy Croft" },
+  { text: "You are my dream come true, today, tomorrow, and forever.", author: "— Tharani & Surya" },
+  { text: "No matter where I go, I always find my way back to you.", author: "— Heartbeat Note" },
+  { text: "Loving you is as natural as breathing, and just as vital to my life.", author: "— Dedicated to Tharani & Surya" },
+  { text: "You are the missing piece I never knew I was searching for.", author: "— Tharani & Surya" },
+  { text: "Two souls with but a single thought, two hearts that beat as one.", author: "— Friedrich Halm" },
+  { text: "With you, forever doesn't seem long enough.", author: "— Dedicated to Tharani & Surya" },
+  { text: "Your smile is my favorite visual in the entire world.", author: "— Tharani & Surya" },
+  { text: "I choose you. And I'll choose you over and over and over. Without pause, without a doubt, in a heartbeat.", author: "— Daily Promise" },
+  { text: "You bring out the best, happiest, and brightest version of me.", author: "— Dedicated to Tharani & Surya" },
+  { text: "Distance means so little when someone means so much.", author: "— For Tharani & Surya" },
+  { text: "You are the poetry I never knew how to write.", author: "— Romantic Reflection" },
+  { text: "Holding your hand is like finding peace in the middle of chaos.", author: "— Tharani & Surya" },
+  { text: "I loved you yesterday, love you still, always have, always will.", author: "— Dedicated to Tharani & Surya" },
+  { text: "You are my best friend, my soulmate, and my greatest adventure.", author: "— Tharani & Surya" },
+  { text: "Every day with you is a new page in our favorite storybook.", author: "— Daily Chapter" },
+  { text: "Your love is the anchor that grounds me and the wings that help me fly.", author: "— Dedicated to Tharani & Surya" },
+  { text: "I want all of my lasts to be with you.", author: "— Tharani & Surya" },
+  { text: "You are the quiet comfort my soul craved.", author: "— Deep Connection" },
+  { text: "My heart beats your name in every rhythm.", author: "— Tharani & Surya" },
+  { text: "Thank you for being my constant light in this big world.", author: "— Dedicated to Tharani & Surya" },
+  { text: "You are the best decision my heart ever made.", author: "— Tharani & Surya" },
+  { text: "Life with you is a sweet melody that never ends.", author: "— Romantic Thought" },
+  { text: "You are my safe haven, my sweet comfort, and my forever love.", author: "— Dedicated to Tharani & Surya" }
+];
+
+let currentQuoteIndex = 0;
+let particleCanvasAnimationId = null;
+
+// GET DAY OF YEAR INDEX (1 to 365)
+function getDayOfYear(date = new Date()) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
+  const oneDay = 1000 * 60 * 60 * 24;
+  return Math.floor(diff / oneDay);
+}
+
+// INITIALIZE QUOTES ENGINE ON LOAD
+function initDailyQuotesEngine() {
+  const dayOfYear = getDayOfYear();
+  const allQuotes = getAllQuotes();
+  currentQuoteIndex = (dayOfYear - 1) % allQuotes.length;
+
+  renderQuote(currentQuoteIndex, false);
+
+  // Auto popup trigger on page load / first link visit
+  setTimeout(() => {
+    openDailyQuotePopup();
+  }, 600);
+}
+
+// COMBINE DEFAULT + CUSTOM QUOTES
+function getAllQuotes() {
+  const custom = appState.customQuotes || [];
+  return [...THARANI_SURYA_QUOTES, ...custom];
+}
+
+// RENDER QUOTE TO BOTH POPUP AND IN-PAGE CARD
+function renderQuote(index, animate = true) {
+  const allQuotes = getAllQuotes();
+  if (index < 0) index = allQuotes.length - 1;
+  if (index >= allQuotes.length) index = 0;
+  currentQuoteIndex = index;
+
+  const quote = allQuotes[currentQuoteIndex];
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  const dayOfYear = getDayOfYear();
+
+  const popupTextEl = document.getElementById('popup-quote-text');
+  const popupAuthorEl = document.getElementById('popup-quote-author');
+  const popupDateEl = document.getElementById('popup-date-text');
+  const popupDayCountEl = document.getElementById('popup-day-count');
+
+  const inpageTextEl = document.getElementById('inpage-quote-text');
+  const inpageAuthorEl = document.getElementById('inpage-quote-author');
+  const inpageDateEl = document.getElementById('inpage-date-text');
+  const inpageDayCountEl = document.getElementById('inpage-day-count');
+
+  const updateDOM = () => {
+    if (popupTextEl) popupTextEl.textContent = `"${quote.text}"`;
+    if (popupAuthorEl) popupAuthorEl.textContent = quote.author || "— Dedicated to Tharani & Surya";
+    if (popupDateEl) popupDateEl.innerHTML = `<i class="fa-regular fa-calendar-heart"></i> ${dateStr}`;
+    if (popupDayCountEl) popupDayCountEl.innerHTML = `<i class="fa-solid fa-star"></i> Day ${dayOfYear} of 365`;
+
+    if (inpageTextEl) inpageTextEl.textContent = `"${quote.text}"`;
+    if (inpageAuthorEl) inpageAuthorEl.textContent = quote.author || "— Dedicated to Tharani & Surya";
+    if (inpageDateEl) inpageDateEl.innerHTML = `<i class="fa-regular fa-calendar-heart"></i> ${dateStr}`;
+    if (inpageDayCountEl) inpageDayCountEl.innerHTML = `<i class="fa-solid fa-star"></i> Day ${dayOfYear} of 365`;
+
+    updateFavButtonState();
+  };
+
+  if (animate && popupTextEl) {
+    popupTextEl.classList.add('fade-out');
+    if (inpageTextEl) inpageTextEl.style.opacity = '0';
+    setTimeout(() => {
+      updateDOM();
+      popupTextEl.classList.remove('fade-out');
+      if (inpageTextEl) inpageTextEl.style.opacity = '1';
+    }, 250);
+  } else {
+    updateDOM();
+  }
+}
+
+// NAVIGATE QUOTE (NEXT / PREV)
+function navigateQuote(direction) {
+  playChimeSound();
+  renderQuote(currentQuoteIndex + direction, true);
+}
+
+// RANDOM QUOTE TRIGGER
+function triggerRandomQuote() {
+  playChimeSound();
+  const allQuotes = getAllQuotes();
+  let randomIndex = Math.floor(Math.random() * allQuotes.length);
+  if (randomIndex === currentQuoteIndex && allQuotes.length > 1) {
+    randomIndex = (randomIndex + 1) % allQuotes.length;
+  }
+  renderQuote(randomIndex, true);
+  showToast("✨ Random inspiration generated!");
+}
+
+// COPY CURRENT QUOTE
+function copyCurrentQuote() {
+  const allQuotes = getAllQuotes();
+  const quote = allQuotes[currentQuoteIndex];
+  const fullText = `"${quote.text}" ${quote.author} (Tharani & Surya's Daily Quote)`;
+  
+  navigator.clipboard.writeText(fullText).then(() => {
+    showToast("📋 Quote copied to clipboard!");
+  }).catch(() => {
+    showToast("📋 Quote ready!");
+  });
+}
+
+// TOGGLE FAVORITE QUOTE
+function toggleFavoriteCurrentQuote() {
+  if (!appState.favoriteQuotes) appState.favoriteQuotes = [];
+  const allQuotes = getAllQuotes();
+  const currentQuote = allQuotes[currentQuoteIndex];
+
+  const existsIdx = appState.favoriteQuotes.findIndex(q => q.text === currentQuote.text);
+  if (existsIdx > -1) {
+    appState.favoriteQuotes.splice(existsIdx, 1);
+    showToast("💔 Removed from favorite quotes.");
+  } else {
+    appState.favoriteQuotes.push(currentQuote);
+    showToast("❤️ Saved to your favorite quotes!");
+  }
+  saveState();
+  updateFavButtonState();
+}
+
+function updateFavButtonState() {
+  const btn = document.getElementById('fav-quote-btn');
+  if (!btn) return;
+  const allQuotes = getAllQuotes();
+  const currentQuote = allQuotes[currentQuoteIndex];
+  const isFav = appState.favoriteQuotes && appState.favoriteQuotes.some(q => q.text === currentQuote.text);
+  
+  if (isFav) {
+    btn.classList.add('active-fav');
+  } else {
+    btn.classList.remove('active-fav');
+  }
+}
+
+// OPEN / CLOSE POPUP MODAL
+function openDailyQuotePopup() {
+  const popup = document.getElementById('modal-daily-quote-popup');
+  if (!popup) return;
+  popup.classList.add('active');
+  renderQuote(currentQuoteIndex, false);
+  initQuoteParticlesCanvas();
+  playChimeSound();
+}
+
+function closeDailyQuotePopup() {
+  const popup = document.getElementById('modal-daily-quote-popup');
+  if (popup) popup.classList.remove('active');
+  if (particleCanvasAnimationId) {
+    cancelAnimationFrame(particleCanvasAnimationId);
+    particleCanvasAnimationId = null;
+  }
+}
+
+// CUSTOM QUOTE MODAL HANDLER
+function openAddCustomQuoteModal() {
+  openModal('modal-add-custom-quote');
+}
+
+function saveCustomQuote(e) {
+  e.preventDefault();
+  const textInput = document.getElementById('input-custom-quote-text');
+  const authorInput = document.getElementById('input-custom-quote-author');
+
+  if (!textInput || !textInput.value.trim()) return;
+
+  if (!appState.customQuotes) appState.customQuotes = [];
+  const newQuote = {
+    text: textInput.value.trim(),
+    author: authorInput.value.trim() || "— Dedicated to Tharani & Surya"
+  };
+
+  appState.customQuotes.push(newQuote);
+  saveState();
+
+  textInput.value = '';
+  closeModal('modal-add-custom-quote');
+
+  const allQuotes = getAllQuotes();
+  renderQuote(allQuotes.length - 1, true);
+  showToast("❤️ Custom quote added to Tharani & Surya's collection!");
+}
+
+// PARTICLE CANVAS ANIMATION FOR POPUP
+function initQuoteParticlesCanvas() {
+  const canvas = document.getElementById('quote-particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    if (!canvas) return;
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const particleCount = 35;
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 4 + 1.5,
+      speedY: Math.random() * 0.8 + 0.3,
+      speedX: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random() * 0.6 + 0.2,
+      isHeart: Math.random() > 0.6
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, width, height);
+
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      p.x += p.speedX;
+
+      if (p.y < -10) {
+        p.y = height + 10;
+        p.x = Math.random() * width;
+      }
+
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+
+      if (p.isHeart) {
+        ctx.fillStyle = '#f472b6';
+        ctx.font = `${p.size * 3}px sans-serif`;
+        ctx.fillText('♥', p.x, p.y);
+      } else {
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    });
+
+    particleCanvasAnimationId = requestAnimationFrame(drawParticles);
+  }
+
+  if (particleCanvasAnimationId) cancelAnimationFrame(particleCanvasAnimationId);
+  drawParticles();
+}
+
+// AUDIO CHIME SYNTHESIZER
+function playChimeSound() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.25); // A5
+
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+  } catch (e) {
+    // Audio context may be restricted before user gesture
+  }
+}
+
+// TOAST NOTIFICATION UTILITY
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.innerHTML = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// ADVANCED TAB SWIPE CONTROLLER WITH GESTURES & ANIMATIONS
+const TABS_LIST = [
+  'home',
+  'journey',
+  'memories',
+  'favorites',
+  'music-player',
+  'reasons',
+  'daily-quotes-sec',
+  'surprises'
+];
+
+let activeTabIdx = 0;
+
+function swipeNextTab() {
+  const nextIdx = (activeTabIdx + 1) % TABS_LIST.length;
+  showTab(TABS_LIST[nextIdx], null, 'right');
+}
+
+function swipePrevTab() {
+  const prevIdx = (activeTabIdx - 1 + TABS_LIST.length) % TABS_LIST.length;
+  showTab(TABS_LIST[prevIdx], null, 'left');
+}
+
+function showTab(tabId, event, animDirection) {
+  if (event) event.preventDefault();
+
+  const prevIdx = activeTabIdx;
+  const newIdx = TABS_LIST.indexOf(tabId) !== -1 ? TABS_LIST.indexOf(tabId) : 0;
+  activeTabIdx = newIdx;
+
+  // Determine direction if not explicit
+  if (!animDirection) {
+    if (newIdx > prevIdx) animDirection = 'right';
+    else if (newIdx < prevIdx) animDirection = 'left';
+    else animDirection = 'right';
+  }
+
+  // Highlight active link in navbar
+  const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === '#' + tabId || (tabId === 'home' && href === '#hero')) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+
+  const body = document.body;
+  const heroSec = document.getElementById('hero');
+  const catStrip = document.querySelector('.category-strip');
+  const dashGrid = document.querySelector('.dashboard-grid-section');
+  const journeyCard = document.getElementById('journey');
+  const memoriesCard = document.getElementById('memories');
+  const favoritesCard = document.getElementById('favorites');
+  const timerBanner = document.querySelector('.timer-banner-section');
+  const surprisesSec = document.getElementById('surprises');
+  const reasonsCard = document.getElementById('reasons');
+  const memoryJarCard = document.querySelector('.memory-jar-card');
+  const wheelCard = document.querySelector('.wheel-card');
+  const loveNoteCard = document.querySelector('.love-note-card');
+  const dailyQuotesSec = document.getElementById('daily-quotes-sec');
+  const musicPlayerSec = document.getElementById('music-player');
+
+  const breadcrumb = document.getElementById('tab-breadcrumb');
+  const breadcrumbTitle = document.getElementById('tab-breadcrumb-title');
+  const progressBadge = document.getElementById('tab-progress-badge');
+  const sideLeft = document.getElementById('side-swipe-left');
+  const sideRight = document.getElementById('side-swipe-right');
+
+  // Remove previous swipe animation classes
+  const allContainers = [heroSec, catStrip, dashGrid, timerBanner, surprisesSec, dailyQuotesSec, musicPlayerSec];
+  allContainers.forEach(c => {
+    if (c) {
+      c.classList.remove('tab-swipe-left-in', 'tab-swipe-right-in');
+    }
+  });
+
+  const animClass = animDirection === 'left' ? 'tab-swipe-right-in' : 'tab-swipe-left-in';
+
+  if (tabId === 'home' || tabId === 'hero') {
+    body.classList.remove('single-tab-mode');
+    allContainers.forEach(c => { if (c) c.classList.remove('tab-hidden'); });
+    if (journeyCard) journeyCard.classList.remove('tab-hidden');
+    if (memoriesCard) memoriesCard.classList.remove('tab-hidden');
+    if (favoritesCard) favoritesCard.classList.remove('tab-hidden');
+    if (reasonsCard) reasonsCard.classList.remove('tab-hidden');
+    if (memoryJarCard) memoryJarCard.classList.remove('tab-hidden');
+    if (wheelCard) wheelCard.classList.remove('tab-hidden');
+    if (loveNoteCard) loveNoteCard.classList.remove('tab-hidden');
+
+    if (breadcrumb) breadcrumb.classList.add('tab-hidden');
+    if (sideLeft) sideLeft.classList.add('tab-hidden');
+    if (sideRight) sideRight.classList.add('tab-hidden');
+  } else {
+    body.classList.add('single-tab-mode');
+
+    // Hide all sections first
+    allContainers.forEach(c => { if (c) c.classList.add('tab-hidden'); });
+    if (journeyCard) journeyCard.classList.add('tab-hidden');
+    if (memoriesCard) memoriesCard.classList.add('tab-hidden');
+    if (favoritesCard) favoritesCard.classList.add('tab-hidden');
+    if (reasonsCard) reasonsCard.classList.add('tab-hidden');
+    if (memoryJarCard) memoryJarCard.classList.add('tab-hidden');
+    if (wheelCard) wheelCard.classList.add('tab-hidden');
+    if (loveNoteCard) loveNoteCard.classList.add('tab-hidden');
+
+    if (breadcrumb) breadcrumb.classList.remove('tab-hidden');
+    if (sideLeft) sideLeft.classList.remove('tab-hidden');
+    if (sideRight) sideRight.classList.remove('tab-hidden');
+
+    let titleText = 'Feature Showcase';
+    let iconClass = 'fa-sparkles';
+    let targetElement = null;
+
+    if (tabId === 'journey') {
+      if (dashGrid) { dashGrid.classList.remove('tab-hidden'); targetElement = dashGrid; }
+      if (journeyCard) journeyCard.classList.remove('tab-hidden');
+      titleText = 'Our Story Timeline';
+      iconClass = 'fa-book-open';
+    } else if (tabId === 'memories') {
+      if (dashGrid) { dashGrid.classList.remove('tab-hidden'); targetElement = dashGrid; }
+      if (memoriesCard) memoriesCard.classList.remove('tab-hidden');
+      titleText = 'Recent Memories Gallery';
+      iconClass = 'fa-images';
+    } else if (tabId === 'favorites') {
+      if (dashGrid) { dashGrid.classList.remove('tab-hidden'); targetElement = dashGrid; }
+      if (favoritesCard) favoritesCard.classList.remove('tab-hidden');
+      titleText = 'Your Favorites';
+      iconClass = 'fa-star';
+    } else if (tabId === 'music-player') {
+      if (musicPlayerSec) { musicPlayerSec.classList.remove('tab-hidden'); targetElement = musicPlayerSec; }
+      titleText = 'Our Playlist & Music Player';
+      iconClass = 'fa-music';
+    } else if (tabId === 'reasons') {
+      if (surprisesSec) { surprisesSec.classList.remove('tab-hidden'); targetElement = surprisesSec; }
+      if (reasonsCard) reasonsCard.classList.remove('tab-hidden');
+      titleText = 'Reasons I Love You';
+      iconClass = 'fa-heart-circle-check';
+    } else if (tabId === 'daily-quotes-sec') {
+      if (dailyQuotesSec) { dailyQuotesSec.classList.remove('tab-hidden'); targetElement = dailyQuotesSec; }
+      titleText = 'Daily Thoughts & Quotes';
+      iconClass = 'fa-quote-left';
+    } else if (tabId === 'surprises') {
+      if (surprisesSec) { surprisesSec.classList.remove('tab-hidden'); targetElement = surprisesSec; }
+      if (memoryJarCard) memoryJarCard.classList.remove('tab-hidden');
+      if (wheelCard) wheelCard.classList.remove('tab-hidden');
+      if (loveNoteCard) loveNoteCard.classList.remove('tab-hidden');
+      titleText = 'Interactive Surprises & Games';
+      iconClass = 'fa-gift';
+    }
+
+    if (targetElement) {
+      targetElement.classList.add(animClass);
+    }
+
+    if (breadcrumbTitle) {
+      breadcrumbTitle.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${titleText}`;
+    }
+    if (progressBadge) {
+      progressBadge.textContent = `${activeTabIdx + 1} of ${TABS_LIST.length}`;
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  playChimeSound();
+}
+
+// GESTURE & TOUCH SWIPE DETECTOR
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+  if (e.touches && e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (!document.body.classList.contains('single-tab-mode')) return;
+  if (!e.changedTouches || e.changedTouches.length === 0) return;
+
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+
+  const diffX = touchEndX - touchStartX;
+  const diffY = touchEndY - touchStartY;
+
+  // Check if horizontal swipe was dominant
+  if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+    if (diffX < 0) {
+      swipeNextTab(); // Swiped left -> Go Next
+    } else {
+      swipePrevTab(); // Swiped right -> Go Prev
+    }
+  }
+}, { passive: true });
+
+// KEYBOARD ARROW NAVIGATION (Left / Right keys to swipe)
+document.addEventListener('keydown', (e) => {
+  if (!document.body.classList.contains('single-tab-mode')) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key === 'ArrowRight') {
+    swipeNextTab();
+  } else if (e.key === 'ArrowLeft') {
+    swipePrevTab();
+  }
+});
+
