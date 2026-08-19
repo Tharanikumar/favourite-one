@@ -49,6 +49,26 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark Theme Overrides */
+body[data-theme="dark"] {
+  --bg-main: #0f0c1b;
+  --bg-card: rgba(24, 20, 42, 0.82);
+  --bg-card-hover: rgba(36, 30, 62, 0.92);
+  --primary-pink: #f472b6;
+  --primary-rose: #fb7185;
+  --primary-dark: #fda4af;
+  --accent-pink-soft: #2a1b32;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-light: #6b7280;
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 35px rgba(244, 114, 182, 0.45);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+  --grad-hero: linear-gradient(135deg, #15102a 0%, #1e1338 50%, #291240 100%);
+}
+
 /* Base Resets */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2291,4 +2311,128 @@ body {
     transform: translate(calc(var(--dx) * 1.35), calc(var(--dy) + 55px)) scale(0.5) rotate(calc(var(--rot) * 1.6));
   }
 }
+
+/* ==========================================================================
+   ENHANCED MODERN UI COMPONENT STYLES
+   ========================================================================== */
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-pink), var(--primary-rose));
+  border-radius: 10px;
+  border: 2px solid var(--bg-main);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-rose);
+}
+
+/* Theme Toggle Button Styling */
+.theme-toggle-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: var(--bg-card);
+  border: var(--glass-border);
+  color: var(--primary-rose);
+}
+.theme-toggle-btn:hover {
+  transform: rotate(18deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
+}
+body[data-theme="dark"] .theme-toggle-btn {
+  color: #facc15;
+}
+
+/* Hero Quick Stats Bar */
+.hero-quick-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  background: var(--bg-card);
+  border: var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.stat-pill:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-pink);
+}
+
+.stat-pill-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+}
+
+.stat-pill-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-num {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.stat-lbl {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Glassmorphism Card Glow Upgrades */
+.card, .quote-popup-box, .modal-content, .fav-card, .reason-card, .milestone-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: var(--glass-border);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fav-card:hover, .reason-card:hover, .milestone-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(244, 114, 182, 0.2);
+  border-color: rgba(244, 114, 182, 0.6);
+}
+
+/* Scroll Reveal Fade In */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 

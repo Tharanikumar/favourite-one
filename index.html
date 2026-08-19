@@ -126,6 +126,9 @@
         <button class="btn btn-for-you" onclick="openLoveLetterModal()">
           <span>For You</span> <i class="fa-solid fa-heart"></i>
         </button>
+        <button class="btn btn-icon-only theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Switch Light/Dark Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
         <button class="btn btn-icon-only" onclick="openSettingsModal()" title="Customize Settings">
           <i class="fa-solid fa-gear"></i>
         </button>
@@ -193,6 +196,31 @@
                 <span class="song-title" id="active-song-title">Kannukkullai Unnai Vaithai</span>
               </div>
             </button>
+          </div>
+
+          <!-- Quick Stats Bar -->
+          <div class="hero-quick-stats">
+            <div class="stat-pill">
+              <div class="stat-pill-icon"><i class="fa-solid fa-calendar-heart"></i></div>
+              <div class="stat-pill-text">
+                <span class="stat-num" id="hero-stat-days">1,067+</span>
+                <span class="stat-lbl">Days Together</span>
+              </div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-pill-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+              <div class="stat-pill-text">
+                <span class="stat-num" id="hero-stat-milestones">5</span>
+                <span class="stat-lbl">Milestones</span>
+              </div>
+            </div>
+            <div class="stat-pill">
+              <div class="stat-pill-icon"><i class="fa-solid fa-sparkles"></i></div>
+              <div class="stat-pill-text">
+                <span class="stat-num" id="hero-stat-quotes">365</span>
+                <span class="stat-lbl">Daily Quotes</span>
+              </div>
+            </div>
           </div>
         </div>
 

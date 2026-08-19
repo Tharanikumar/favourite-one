@@ -120,12 +120,24 @@ function updateTimerDisplay() {
   const minutes = minutesTotal % 60;
   const seconds = secondsTotal % 60;
 
-  document.getElementById('count-years').textContent = String(years).padStart(2, '0');
-  document.getElementById('count-months').textContent = String(months).padStart(2, '0');
-  document.getElementById('count-days').textContent = String(days).padStart(2, '0');
-  document.getElementById('count-hours').textContent = String(hours).padStart(2, '0');
-  document.getElementById('count-minutes').textContent = String(minutes).padStart(2, '0');
-  document.getElementById('count-seconds').textContent = String(seconds).padStart(2, '0');
+  const countYearsEl = document.getElementById('count-years');
+  if (countYearsEl) countYearsEl.textContent = String(years).padStart(2, '0');
+  const countMonthsEl = document.getElementById('count-months');
+  if (countMonthsEl) countMonthsEl.textContent = String(months).padStart(2, '0');
+  const countDaysEl = document.getElementById('count-days');
+  if (countDaysEl) countDaysEl.textContent = String(days).padStart(2, '0');
+  const countHoursEl = document.getElementById('count-hours');
+  if (countHoursEl) countHoursEl.textContent = String(hours).padStart(2, '0');
+  const countMinutesEl = document.getElementById('count-minutes');
+  if (countMinutesEl) countMinutesEl.textContent = String(minutes).padStart(2, '0');
+  const countSecondsEl = document.getElementById('count-seconds');
+  if (countSecondsEl) countSecondsEl.textContent = String(seconds).padStart(2, '0');
+
+  // Hero Quick Stats dynamic update
+  const heroDaysEl = document.getElementById('hero-stat-days');
+  if (heroDaysEl) heroDaysEl.textContent = daysTotal.toLocaleString() + '+';
+  const heroMilestonesEl = document.getElementById('hero-stat-milestones');
+  if (heroMilestonesEl) heroMilestonesEl.textContent = appState.milestones ? appState.milestones.length : '5';
 }
 
 // 2. SPIN THE WHEEL MINI-GAME ENGINE
@@ -1334,4 +1346,52 @@ document.addEventListener('keydown', (e) => {
     swipePrevTab();
   }
 });
+
+/* ==========================================================================
+   THEME ENGINE (DARK / LIGHT MODE PERSISTENCE)
+   ========================================================================== */
+function initTheme() {
+  const savedTheme = localStorage.getItem('evermine_theme') || 'light';
+  applyTheme(savedTheme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.body.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  applyTheme(newTheme);
+  localStorage.setItem('evermine_theme', newTheme);
+  
+  if (typeof triggerConfetti === 'function') triggerConfetti();
+}
+
+function applyTheme(themeName) {
+  document.body.setAttribute('data-theme', themeName);
+  const btnIcon = document.querySelector('#theme-toggle-btn i');
+  if (btnIcon) {
+    if (themeName === 'dark') {
+      btnIcon.className = 'fa-solid fa-sun';
+    } else {
+      btnIcon.className = 'fa-solid fa-moon';
+    }
+  }
+}
+
+/* ==========================================================================
+   SCROLL REVEAL ANIMATIONS
+   ========================================================================== */
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.cat-card, .fav-card, .reason-card, .timeline-item, .stat-pill');
+  revealElements.forEach(el => el.classList.add('reveal-on-scroll'));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealElements.forEach(el => observer.observe(el));
+}
+
 
