@@ -331,17 +331,20 @@ const PLAYLIST = [
   {
     title: 'Kannukkullai Unnai Vaithai',
     artist: 'Pennin Manathai Thottu (Unni Menon)',
-    src: 'assets/kannukkullai_unnai_vaithai.m4a'
+    src: 'assets/kannukkullai_unnai_vaithai.wav',
+    fallbackSrc: 'assets/kannukkullai_unnai_vaithai.m4a'
   },
   {
     title: 'Poove Mudhal Poove (Male)',
     artist: 'Kadhal Kondein (Yuvan Shankar Raja)',
-    src: 'assets/poove_mudhal_poove.m4a'
+    src: 'assets/poove_mudhal_poove.wav',
+    fallbackSrc: 'assets/poove_mudhal_poove.m4a'
   },
   {
     title: 'Ennai Thaalattum',
     artist: 'Unnidathil Ennai Koduthen (S.A. Rajkumar)',
-    src: 'assets/ennai_thaalattum.m4a'
+    src: 'assets/ennai_thaalattum.wav',
+    fallbackSrc: 'assets/ennai_thaalattum.m4a'
   }
 ];
 
@@ -384,9 +387,28 @@ function playSynthNote(freq, duration = 1.2) {
   osc.stop(audioCtx.currentTime + duration);
 }
 
+function updateMusicControlUI(playing) {
+  const mainIcon = document.getElementById('main-play-icon');
+  const barPlayBtn = document.getElementById('bar-play-btn');
+  const disc = document.getElementById('music-disc');
+
+  if (playing) {
+    if (mainIcon) mainIcon.className = 'fa-solid fa-pause';
+    if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-pause" id="main-play-icon"></i>';
+    if (disc) disc.classList.add('playing');
+  } else {
+    if (mainIcon) mainIcon.className = 'fa-solid fa-play';
+    if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-play" id="main-play-icon"></i>';
+    if (disc) disc.classList.remove('playing');
+  }
+
+  updatePlaylistUI();
+}
+
 function loadTrack(index) {
-  currentTrackIndex = (index + PLAYLIST.length) % PLAYLIST.length;
-  const track = PLAYLIST[currentTrackIndex];
+  if (index < 0 || index >= PLAYLIST.length) return;
+  currentTrackIndex = index;
+  const track = PLAYLIST[index];
   
   const barTitle = document.getElementById('bar-track-title');
   const barArtist = document.getElementById('bar-track-artist');
@@ -402,15 +424,25 @@ function loadTrack(index) {
     audioEl.load();
   }
 
-  // Update playlist items UI active state
+  updatePlaylistUI();
+}
+
+function updatePlaylistUI() {
   const container = document.getElementById('playlist-container');
   if (container) {
     const items = container.querySelectorAll('.playlist-item');
     items.forEach((item, idx) => {
+      const indicator = item.querySelector('.track-play-indicator');
       if (idx === currentTrackIndex) {
         item.classList.add('active');
+        if (indicator) {
+          indicator.innerHTML = isAudioPlaying 
+            ? '<i class="fa-solid fa-circle-pause pulse"></i>' 
+            : '<i class="fa-solid fa-circle-play"></i>';
+        }
       } else {
         item.classList.remove('active');
+        if (indicator) indicator.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
       }
     });
   }
@@ -419,45 +451,47 @@ function loadTrack(index) {
 function selectTrack(index) {
   loadTrack(index);
   const audioEl = document.getElementById('audio-element');
-  const mainIcon = document.getElementById('main-play-icon');
-  const barPlayBtn = document.getElementById('bar-play-btn');
-  const disc = document.getElementById('music-disc');
 
   isAudioPlaying = true;
-  if (mainIcon) mainIcon.className = 'fa-solid fa-pause';
-  if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-  if (disc) disc.classList.add('playing');
+  updateMusicControlUI(true);
 
   if (audioEl) {
     audioEl.volume = masterVolume;
-    audioEl.play().catch(err => {
-      console.log('Audio file play fallback to synth:', err);
-      startRomanticArpeggio();
-    });
+    const playPromise = audioEl.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        console.warn('Primary audio file failed, trying fallback track:', err);
+        const track = PLAYLIST[currentTrackIndex];
+        if (track && track.fallbackSrc) {
+          audioEl.src = track.fallbackSrc;
+          audioEl.load();
+          audioEl.play().catch(e => {
+            console.warn('Fallback track also failed, starting Web Audio synth:', e);
+            startRomanticArpeggio();
+          });
+        } else {
+          startRomanticArpeggio();
+        }
+      });
+    }
+  } else {
+    startRomanticArpeggio();
   }
 }
 
 function toggleMainSong() {
-  isAudioPlaying = !isAudioPlaying;
-
-  const mainIcon = document.getElementById('main-play-icon');
-  const barPlayBtn = document.getElementById('bar-play-btn');
-  const disc = document.getElementById('music-disc');
   const audioEl = document.getElementById('audio-element');
 
-  if (isAudioPlaying) {
-    if (mainIcon) mainIcon.className = 'fa-solid fa-pause';
-    if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    if (disc) disc.classList.add('playing');
+  isAudioPlaying = !isAudioPlaying;
+  updateMusicControlUI(isAudioPlaying);
 
+  if (isAudioPlaying) {
     if (audioEl) {
       audioEl.volume = masterVolume;
       const playPromise = audioEl.play();
       if (playPromise !== undefined) {
-        playPromise.then(() => {
-          // Playing native audio file successfully
-        }).catch(err => {
-          console.log('Audio file play fallback to synth:', err);
+        playPromise.catch(err => {
+          console.warn('Audio file play fallback to synth:', err);
           startRomanticArpeggio();
         });
       }
@@ -465,10 +499,6 @@ function toggleMainSong() {
       startRomanticArpeggio();
     }
   } else {
-    if (mainIcon) mainIcon.className = 'fa-solid fa-play';
-    if (barPlayBtn) barPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-    if (disc) disc.classList.remove('playing');
-
     if (audioEl) {
       audioEl.pause();
     }

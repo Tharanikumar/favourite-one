@@ -1,0 +1,550 @@
+/* ==========================================================================
+   EVERMINE — PREMIUM ROMANTIC REVEAL EXPERIENCE STYLES
+   ========================================================================== */
+
+/* Master Overlay Container */
+#romantic-reveal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background-color: #0A0A0A;
+  overflow: hidden;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #FFFFFF;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#romantic-reveal-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none !important;
+}
+
+/* Discreet Control Toolbar (Audio & Skip) */
+.reveal-top-bar {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.reveal-control-btn {
+  pointer-events: auto;
+  background: rgba(122, 18, 53, 0.45);
+  border: 1px solid rgba(255, 45, 107, 0.4);
+  border-radius: 30px;
+  color: #FFFFFF;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-control-btn:hover {
+  background: rgba(194, 24, 75, 0.6);
+  border-color: #FF6B9D;
+  box-shadow: 0 0 18px rgba(255, 45, 107, 0.5);
+  transform: translateY(-1px);
+}
+
+.reveal-control-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Fullscreen Canvas Layers */
+.reveal-canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Radial Flash Effect for Explosion */
+#reveal-flash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 182, 201, 0.7) 40%, transparent 80%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  transition: opacity 0.25s ease-out;
+}
+
+#reveal-flash-overlay.active {
+  opacity: 1;
+}
+
+/* Background Gradients for Scenes */
+.reveal-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-bg-layer.active {
+  opacity: 1;
+}
+
+/* Scene 3 Gradient */
+#reveal-bg-scene3 {
+  background: radial-gradient(circle at 50% 45%, #FFE0E9 0%, #E99AAD 45%, #6B2945 100%);
+}
+
+/* Scene 4 Abstract Sunset Gradient */
+#reveal-bg-scene4 {
+  background: linear-gradient(180deg, #FF7E5F 0%, #FEB47B 25%, #C2184B 50%, #4A152C 75%, #0A0A0A 100%);
+}
+
+/* Base Scene Structure */
+.reveal-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 10;
+  transform: scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.reveal-scene.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.reveal-scene.zoom-out {
+  opacity: 0;
+  transform: scale(1.05);
+  filter: blur(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+}
+
+/* ==========================================================================
+   SCENE 1 — "I Made Something For You"
+   ========================================================================== */
+.neon-heart-wrapper {
+  position: relative;
+  width: clamp(160px, 35vw, 220px);
+  height: clamp(160px, 35vw, 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.neon-heart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: heartPulse 2s ease-in-out infinite;
+}
+
+.neon-heart-svg path {
+  fill: none;
+  stroke: #FF2D6B;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 10px rgba(255, 45, 107, 0.8)) drop-shadow(0 0 25px rgba(194, 24, 75, 0.6));
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(255, 45, 107, 0.7));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 22px rgba(255, 45, 107, 0.95)) drop-shadow(0 0 35px rgba(255, 107, 157, 0.8));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(255, 45, 107, 0.7));
+  }
+}
+
+.reveal-scene1-text {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  margin: 0 0 32px 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+}
+
+.reveal-scene.active .reveal-scene1-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Pill Button */
+.reveal-btn-heart {
+  background: rgba(122, 18, 53, 0.55);
+  border: 1.5px solid #FF2D6B;
+  box-shadow: 0 0 20px rgba(255, 45, 107, 0.35), inset 0 0 15px rgba(255, 45, 107, 0.2);
+  border-radius: 50px;
+  color: #FFFFFF;
+  padding: 14px 38px;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.reveal-scene.active .reveal-btn-heart {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s, background 0.3s, box-shadow 0.3s;
+}
+
+.reveal-btn-heart:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 30px rgba(255, 45, 107, 0.65), inset 0 0 20px rgba(255, 45, 107, 0.35);
+  border-color: #FF6B9D;
+  background: rgba(194, 24, 75, 0.7);
+}
+
+.reveal-btn-heart:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================================================
+   SCENE 3 — NAME REVEAL
+   ========================================================================== */
+.reveal-for-you {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  color: #4A152C;
+  margin: 0;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-my-love {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(3.5rem, 9vw, 6rem);
+  color: #C2184B;
+  text-shadow: 0 4px 20px rgba(194, 24, 75, 0.3);
+  margin: -5px 0 16px 0;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+
+.reveal-subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(0.95rem, 2.3vw, 1.2rem);
+  color: #7A2B48;
+  font-weight: 400;
+  margin: 0 0 20px 0;
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s;
+}
+
+.reveal-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 220px;
+  margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.8s ease 0.9s;
+}
+
+.reveal-divider .line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, #C2184B, transparent);
+}
+
+.reveal-divider .heart-icon {
+  color: #C2184B;
+  font-size: 1.1rem;
+}
+
+.reveal-scene-3.animated .reveal-for-you,
+.reveal-scene-3.animated .reveal-my-love,
+.reveal-scene-3.animated .reveal-subtitle,
+.reveal-scene-3.animated .reveal-divider {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   SCENE 4 — WELCOME PAGE (ABSTRACT SUNSET & COUPLE SILHOUETTE)
+   ========================================================================== */
+/* Warm Bokeh Circles */
+.sunset-bokeh-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.bokeh-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 182, 201, 0.35) 0%, rgba(255, 45, 107, 0) 70%);
+  filter: blur(15px);
+  animation: floatBokeh 12s ease-in-out infinite alternate;
+}
+
+.bokeh-1 { width: 250px; height: 250px; top: 15%; left: 10%; animation-duration: 10s; }
+.bokeh-2 { width: 320px; height: 320px; top: 35%; right: 5%; animation-duration: 14s; }
+.bokeh-3 { width: 180px; height: 180px; bottom: 20%; left: 30%; animation-duration: 9s; }
+
+@keyframes floatBokeh {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -25px) scale(1.15); }
+}
+
+/* Skyline Silhouette */
+.skyline-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(100px, 20vh, 180px);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Couple Silhouette Container */
+.reveal-couple-container {
+  position: relative;
+  z-index: 4;
+  margin-bottom: 20px;
+}
+
+.reveal-couple-artwork {
+  position: relative;
+  width: clamp(240px, 48vw, 360px);
+  height: clamp(160px, 32vw, 230px);
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 45, 107, 0.4);
+  border: 1.5px solid rgba(255, 182, 201, 0.45);
+  transform: translateY(0);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-couple-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.couple-img-overlay-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(10, 10, 10, 0.4) 100%);
+  pointer-events: none;
+}
+
+.reveal-app-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow: 0 12px 35px rgba(255, 45, 107, 0.6);
+}
+
+.reveal-quote {
+  font-family: 'Playfair Display', 'Outfit', serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 3.4vw, 1.85rem);
+  color: #FFF3F5;
+  text-shadow: 0 2px 14px rgba(10, 10, 10, 0.8), 0 0 20px rgba(255, 107, 157, 0.3);
+  max-width: 620px;
+  margin: 16px auto 28px;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  z-index: 4;
+}
+
+.reveal-scene.active .reveal-quote {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-btn-begin {
+  background: #FF2D6B;
+  border: none;
+  border-radius: 50px;
+  color: #FFFFFF;
+  padding: 14px 42px;
+  font-size: clamp(1.05rem, 2.6vw, 1.2rem);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 28px rgba(255, 45, 107, 0.55);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(15px);
+  z-index: 4;
+}
+
+.reveal-scene.active .reveal-btn-begin {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease 0.6s, transform 0.8s ease 0.6s, background 0.3s, box-shadow 0.3s;
+}
+
+.reveal-btn-begin:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 38px rgba(255, 45, 107, 0.75);
+  background: #FF4A81;
+}
+
+.reveal-btn-begin:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================================================
+   SCENE 5 — WEBSITE SHOWCASE REVEAL (APP ICON ZOOM LAUNCH)
+   ========================================================================== */
+#reveal-app-icon-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.3);
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #FF6B9D 0%, #C2184B 100%);
+  border-radius: 28px;
+  box-shadow: 0 15px 45px rgba(255, 45, 107, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  z-index: 100;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#reveal-app-icon-wrap.appear {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#reveal-app-icon-wrap.pop {
+  transform: translate(-50%, -50%) scale(1.12);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#reveal-app-icon-wrap.expand-launch {
+  transform: translate(-50%, -50%) scale(45);
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  background: #FFF;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN & ACCESSIBILITY
+   ========================================================================== */
+@media (max-width: 480px) {
+  .reveal-top-bar {
+    padding: 0 16px;
+    top: 14px;
+  }
+
+  .reveal-control-btn {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+
+  .reveal-divider {
+    width: 170px;
+  }
+}
+
+/* Reduced Motion Mode Support */
+@media (prefers-reduced-motion: reduce) {
+  .neon-heart-svg {
+    animation: none !important;
+  }
+
+  .bokeh-circle {
+    animation: none !important;
+  }
+
+  .reveal-scene,
+  .reveal-btn-heart,
+  .reveal-btn-begin,
+  #reveal-app-icon-wrap {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+}

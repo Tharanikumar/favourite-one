@@ -16,6 +16,7 @@
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/reveal.css">
 </head>
 <body>
 
@@ -681,7 +682,7 @@
 
           <div class="music-controls">
             <button class="btn-music-ctrl" onclick="prevTrack()" title="Previous Track"><i class="fa-solid fa-backward-step"></i></button>
-            <button class="btn-music-ctrl main-play-btn" id="bar-play-btn" onclick="toggleMainSong()" title="Play / Pause"><i class="fa-solid fa-play"></i></button>
+            <button class="btn-music-ctrl main-play-btn" id="bar-play-btn" onclick="toggleMainSong()" title="Play / Pause"><i class="fa-solid fa-play" id="main-play-icon"></i></button>
             <button class="btn-music-ctrl" onclick="nextTrack()" title="Next Track"><i class="fa-solid fa-forward-step"></i></button>
           </div>
 
@@ -905,6 +906,8 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- REVEAL ENGINE SCRIPT -->
+  <script src="js/reveal.js"></script>
   <!-- APP LOGIC SCRIPT -->
   <script src="js/app.js"></script>
 </body>
