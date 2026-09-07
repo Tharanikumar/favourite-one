@@ -12,7 +12,8 @@ export const APP_CONFIG = {
   },
   theme: {
     accentGold: "#BA873C",
-    accentRose: "#C86F82",
+    accentRose: "#FF6B6B",
+    sunsetCoral: "#FF6B6B",
     blushPink: "#FDE8E9",
     softPeach: "#FEDEC8",
     warmCream: "#FFF8F0",

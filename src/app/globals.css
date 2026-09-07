@@ -6,14 +6,16 @@
   --bg-primary: #FFF8F9;
   --bg-secondary: #FFF0F3;
   --bg-card: rgba(255, 255, 255, 0.85);
-  --border-subtle: rgba(200, 111, 130, 0.15);
+  --border-subtle: rgba(255, 107, 107, 0.15);
   --border-gold: rgba(212, 163, 89, 0.35);
-  --border-rose: rgba(200, 111, 130, 0.3);
+  --border-rose: rgba(255, 107, 107, 0.3);
+  --border-coral: rgba(255, 107, 107, 0.35);
   --text-primary: #1F1D24;
   --text-secondary: #443F4D;
   --text-muted: #7F778A;
   --gold-accent: #BA873C;
-  --rose-accent: #C86F82;
+  --rose-accent: #FF6B6B;
+  --coral-accent: #FF6B6B;
   --peach-accent: #FEDEC8;
   --sage-accent: #C7D7CE;
   --mauve-accent: #D7BEDF;
@@ -39,7 +41,7 @@ body {
 }
 
 ::selection {
-  background: rgba(200, 111, 130, 0.22);
+  background: rgba(255, 107, 107, 0.25);
   color: #1F1D24;
 }
 
@@ -54,12 +56,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #F3BDC7;
+  background: #FFA4A4;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C86F82;
+  background: #FF6B6B;
 }
 
 /* Subtle Romantic Petal Grain Texture */

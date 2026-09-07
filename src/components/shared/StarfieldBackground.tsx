@@ -28,6 +28,7 @@ export function StarfieldBackground() {
     const starCount = Math.min(80, Math.floor((width * height) / 15000));
     const stars = Array.from({ length: starCount }, () => {
       const palette = [
+        "255, 107, 107", // Sunset Coral
         "224, 147, 162", // Dusty Rose
         "254, 222, 200", // Soft Peach
         "199, 215, 206", // Sage Green
@@ -83,11 +84,11 @@ export function StarfieldBackground() {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-70"
+        className="absolute inset-0 w-full h-full opacity-75"
         aria-hidden="true"
       />
-      {/* Soft romantic ambient glowing orbs */}
-      <div className="absolute -top-32 left-1/4 w-[450px] h-[450px] bg-rose-400/[0.12] rounded-full blur-3xl pointer-events-none" />
+      {/* Soft romantic ambient glowing orbs with Sunset Coral radiance */}
+      <div className="absolute -top-32 left-1/4 w-[450px] h-[450px] bg-rose-500/[0.14] rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-peach-400/[0.18] rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 left-1/3 w-[550px] h-[550px] bg-sage-400/[0.12] rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 -left-20 w-[400px] h-[400px] bg-mauve-400/[0.1] rounded-full blur-3xl pointer-events-none" />

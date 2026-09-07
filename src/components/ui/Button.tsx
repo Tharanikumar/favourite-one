@@ -5,7 +5,7 @@ import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
-  variant?: "gold" | "glass" | "rose" | "outline" | "ghost" | "danger";
+  variant?: "gold" | "glass" | "rose" | "coral" | "outline" | "ghost" | "danger";
   size?: "sm" | "md" | "lg" | "icon";
   children?: React.ReactNode;
   icon?: React.ReactNode;
@@ -35,7 +35,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       gold: "bg-gradient-to-r from-gold-500 to-gold-400 hover:from-gold-400 hover:to-gold-300 text-white shadow-glow-gold hover:shadow-[0_0_25px_rgba(212,163,89,0.4)] font-semibold border border-gold-300/40",
       glass:
         "bg-white/85 hover:bg-white text-cream-100 hover:text-universe-950 border border-universe-750 hover:border-rose-400/60 backdrop-blur-md shadow-glass",
-      rose: "bg-gradient-to-r from-rose-500 to-rose-400 hover:from-rose-400 hover:to-rose-300 text-white shadow-glow-rose hover:shadow-[0_0_25px_rgba(200,111,130,0.4)] border border-rose-300/40",
+      rose: "bg-gradient-to-r from-[#FF6B6B] to-[#FF8787] hover:from-[#FA5252] hover:to-[#FF6B6B] text-white shadow-glow-coral hover:shadow-[0_0_28px_rgba(255,107,107,0.45)] border border-[#FFA4A4]/50 font-medium",
+      coral: "bg-gradient-to-r from-[#FF6B6B] via-[#FA5252] to-[#FF8787] hover:from-[#FA5252] hover:to-[#E03131] text-white shadow-glow-coral hover:shadow-[0_0_30px_rgba(255,107,107,0.5)] border border-[#FFA4A4]/60 font-semibold",
       outline:
         "border border-rose-400/50 hover:border-rose-500 text-cream-100 hover:text-rose-600 bg-white/40 hover:bg-rose-50/70",
       ghost: "text-cream-300 hover:text-cream-50 hover:bg-rose-100/40 border border-transparent",

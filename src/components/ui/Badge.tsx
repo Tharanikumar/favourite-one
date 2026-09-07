@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "gold" | "rose" | "subtle" | "outline" | "solid" | "default" | "sage" | "mauve" | "peach";
+  variant?: "gold" | "rose" | "coral" | "subtle" | "outline" | "solid" | "default" | "sage" | "mauve" | "peach";
   size?: "sm" | "md";
 }
 
@@ -17,7 +17,8 @@ export function Badge({
 
   const variantStyles = {
     gold: "bg-gold-400/20 text-gold-700 border border-gold-500/35",
-    rose: "bg-rose-400/20 text-rose-700 border border-rose-500/35",
+    rose: "bg-rose-500/15 text-rose-600 border border-rose-400/40",
+    coral: "bg-coral-500/15 text-coral-600 border border-coral-400/40 font-semibold",
     subtle: "bg-universe-900/90 text-cream-200 border border-universe-750/70",
     default: "bg-universe-900/90 text-cream-200 border border-universe-750/70",
     outline: "border border-universe-700/60 text-cream-200 bg-white/60",

@@ -76,11 +76,12 @@ export function ParticleHeart({
     };
 
     const particleColors = [
+      "rgba(255, 107, 107, ", // Sunset Coral (#FF6B6B)
       "rgba(253, 232, 233, ", // Blush Pink
       "rgba(254, 222, 200, ", // Soft Peach
-      "rgba(204, 138, 155, ", // Dusty Rose
+      "rgba(224, 147, 162, ", // Dusty Rose
       "rgba(215, 190, 223, ", // Mauve
-      "rgba(235, 178, 190, ", // Rose Sheen
+      "rgba(255, 135, 135, ", // Coral Sheen
     ];
 
     let particles: Particle[] = [];
