@@ -1,0 +1,16 @@
+{
+  "name": "Our Little Universe",
+  "short_name": "Universe",
+  "description": "A private sanctuary for the moments that define us.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08080a",
+  "theme_color": "#08080a",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
