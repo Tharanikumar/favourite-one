@@ -145,3 +145,111 @@ body {
   }
 }
 
+/* Leaflet Map Customizations */
+@import "leaflet/dist/leaflet.css";
+
+.leaflet-container {
+  font-family: inherit;
+  background-color: #FFF0F3 !important;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.custom-romantic-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-romantic-pin .pin-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+}
+
+.custom-romantic-pin .pin-label {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(244, 114, 182, 0.5);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+  color: #881337;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+}
+
+.custom-romantic-pin:hover .pin-label,
+.custom-romantic-pin.is-selected .pin-label {
+  background: #FFF1F2;
+  border-color: #E11D48;
+  color: #9F1239;
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.25);
+}
+
+.custom-romantic-pin .pin-core {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B8B 0%, #FF2A6D 100%);
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 0 4px 14px rgba(255, 42, 109, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.custom-romantic-pin:hover .pin-core,
+.custom-romantic-pin.is-selected .pin-core {
+  transform: scale(1.15);
+  box-shadow: 0 6px 20px rgba(255, 42, 109, 0.6);
+}
+
+.custom-romantic-pin .pin-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+
+.custom-romantic-pin .pin-pulse {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 42, 109, 0.3);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(244, 114, 182, 0.4) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 16px 40px -8px rgba(244, 63, 94, 0.22) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: inherit !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(244, 114, 182, 0.4) !important;
+}
+

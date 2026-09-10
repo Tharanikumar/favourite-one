@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/types";
@@ -13,6 +13,7 @@ import {
   RotateCcw,
   Sparkles,
   ExternalLink,
+  Layers,
 } from "lucide-react";
 
 interface InteractiveMemoryMapProps {
@@ -23,6 +24,38 @@ interface InteractiveMemoryMapProps {
   onOpenDetail?: (place: Place) => void;
 }
 
+type MapLayerType = "pastel" | "osm" | "satellite" | "voyager";
+
+const TILE_PROVIDERS: Record<
+  MapLayerType,
+  { url: string; attribution: string; name: string }
+> = {
+  pastel: {
+    name: "Pastel Dream",
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  },
+  osm: {
+    name: "OpenStreetMap",
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
+  satellite: {
+    name: "Satellite Imagery",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attribution:
+      "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+  },
+  voyager: {
+    name: "Voyager Road",
+    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  },
+};
+
 export function InteractiveMemoryMap({
   places,
   selectedPlace,
@@ -30,289 +63,315 @@ export function InteractiveMemoryMap({
   className = "",
   onOpenDetail,
 }: InteractiveMemoryMapProps) {
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [hoveredPlace, setHoveredPlace] = useState<Place | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapInstanceRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tileLayerRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markersGroupRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const polylineRef = useRef<any>(null);
 
-  // Check if places are concentrated in a local/regional boundary
-  const isRegional = useMemo(() => {
-    if (places.length <= 1) return false;
-    const lngs = places.map((p) => p.lng);
-    const lats = places.map((p) => p.lat);
-    const lngSpan = Math.max(...lngs) - Math.min(...lngs);
-    const latSpan = Math.max(...lats) - Math.min(...lats);
-    return lngSpan < 45 && latSpan < 45;
-  }, [places]);
+  const [mapStyle, setMapStyle] = useState<MapLayerType>("pastel");
+  const [showLayerMenu, setShowLayerMenu] = useState(false);
+  const [isMapReady, setIsMapReady] = useState(false);
 
-  const regionalBounds = useMemo(() => {
-    if (!isRegional || places.length === 0) return null;
-    const lngs = places.map((p) => p.lng);
-    const lats = places.map((p) => p.lat);
-    const minLng = Math.min(...lngs);
-    const maxLng = Math.max(...lngs);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    const lngSpan = Math.max(maxLng - minLng, 1);
-    const latSpan = Math.max(maxLat - minLat, 1);
-    const lngMargin = lngSpan * 0.35;
-    const latMargin = latSpan * 0.35;
-    return {
-      minLng: minLng - lngMargin,
-      maxLng: maxLng + lngMargin,
-      minLat: minLat - latMargin,
-      maxLat: maxLat + latMargin,
-    };
-  }, [isRegional, places]);
+  // Initialize Leaflet Map
+  useEffect(() => {
+    let isMounted = true;
 
-  // Projection: converts GPS lat/lng (-90..90, -180..180) to 0..1000 x 0..500 coordinates
-  const projectCoordinates = (lat: number, lng: number) => {
-    if (isRegional && regionalBounds) {
-      const x =
-        ((lng - regionalBounds.minLng) /
-          (regionalBounds.maxLng - regionalBounds.minLng)) *
-          700 +
-        150;
-      // Invert lat for SVG y (higher lat is top / lower y)
-      const y =
-        380 -
-        ((lat - regionalBounds.minLat) /
-          (regionalBounds.maxLat - regionalBounds.minLat)) *
-          260;
-      return { x, y: Math.max(40, Math.min(460, y)) };
+    async function initMap() {
+      if (!mapContainerRef.current || mapInstanceRef.current) return;
+
+      const L = (await import("leaflet")).default;
+
+      if (!isMounted || !mapContainerRef.current) return;
+
+      // Default center around Tamil Nadu
+      const initialLat = places.length > 0 ? places[0].lat : 11.1271;
+      const initialLng = places.length > 0 ? places[0].lng : 78.6569;
+
+      const map = L.map(mapContainerRef.current, {
+        center: [initialLat, initialLng],
+        zoom: 7,
+        zoomControl: false,
+        attributionControl: false,
+      });
+
+      // Add Tile Layer
+      const initialProvider = TILE_PROVIDERS[mapStyle];
+      const tileLayer = L.tileLayer(initialProvider.url, {
+        attribution: initialProvider.attribution,
+        maxZoom: 19,
+        subdomains: "abcd",
+      }).addTo(map);
+
+      tileLayerRef.current = tileLayer;
+      markersGroupRef.current = L.layerGroup().addTo(map);
+      mapInstanceRef.current = map;
+
+      setIsMapReady(true);
     }
-    const x = ((lng + 180) / 360) * 1000;
-    // Mercator-like latitude scaling
-    const latRad = (lat * Math.PI) / 180;
-    const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
-    const y = 250 - (mercN / Math.PI) * 125;
-    return { x, y: Math.max(20, Math.min(480, y)) };
+
+    initMap();
+
+    return () => {
+      isMounted = false;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Switch Tile Layer
+  useEffect(() => {
+    if (!mapInstanceRef.current || !tileLayerRef.current) return;
+
+    import("leaflet").then((L) => {
+      const provider = TILE_PROVIDERS[mapStyle];
+      if (tileLayerRef.current) {
+        mapInstanceRef.current.removeLayer(tileLayerRef.current);
+      }
+      const newTileLayer = L.default
+        .tileLayer(provider.url, {
+          attribution: provider.attribution,
+          maxZoom: 19,
+          subdomains: "abcd",
+        })
+        .addTo(mapInstanceRef.current);
+      tileLayerRef.current = newTileLayer;
+    });
+  }, [mapStyle]);
+
+  // Update Markers & Polyline when places change
+  useEffect(() => {
+    if (!isMapReady || !mapInstanceRef.current) return;
+
+    import("leaflet").then((L) => {
+      const map = mapInstanceRef.current;
+      const markersGroup = markersGroupRef.current;
+      if (!markersGroup) return;
+
+      markersGroup.clearLayers();
+
+      if (polylineRef.current) {
+        map.removeLayer(polylineRef.current);
+        polylineRef.current = null;
+      }
+
+      if (places.length === 0) return;
+
+      const latLngs: [number, number][] = [];
+
+      places.forEach((place) => {
+        const isSelected = selectedPlace?.id === place.id;
+        latLngs.push([place.lat, place.lng]);
+
+        // Custom HTML Pin Icon
+        const customIcon = L.default.divIcon({
+          className: `custom-romantic-pin ${isSelected ? "is-selected" : ""}`,
+          html: `
+            <div class="pin-wrapper">
+              <span class="pin-label">${place.title}</span>
+              <div class="pin-core">
+                <div class="pin-dot"></div>
+                ${isSelected ? '<div class="pin-pulse"></div>' : ""}
+              </div>
+            </div>
+          `,
+          iconSize: [30, 42],
+          iconAnchor: [15, 42],
+        });
+
+        const marker = L.default
+          .marker([place.lat, place.lng], { icon: customIcon })
+          .addTo(markersGroup);
+
+        marker.on("click", (e) => {
+          L.default.DomEvent.stopPropagation(e);
+          onSelectPlace(place);
+          map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 10), {
+            duration: 1.2,
+          });
+        });
+      });
+
+      // Draw Journey Route Polyline
+      if (latLngs.length > 1) {
+        // Glowing Background Line
+        const glowLine = L.default.polyline(latLngs, {
+          color: "#FF2A6D",
+          weight: 6,
+          opacity: 0.35,
+          lineCap: "round",
+          lineJoin: "round",
+        });
+
+        // Core Dotted Connection Line
+        const mainLine = L.default.polyline(latLngs, {
+          color: "#E11D48",
+          weight: 2.5,
+          opacity: 0.85,
+          dashArray: "6, 8",
+          lineCap: "round",
+          lineJoin: "round",
+        });
+
+        const routeGroup = L.default.featureGroup([glowLine, mainLine]);
+        routeGroup.addTo(map);
+        polylineRef.current = routeGroup;
+      }
+
+      // Auto-fit Bounds with generous padding
+      if (latLngs.length > 0) {
+        const bounds = L.default.latLngBounds(latLngs);
+        map.fitBounds(bounds, {
+          padding: [50, 50],
+          maxZoom: 11,
+          animate: true,
+        });
+      }
+    });
+  }, [places, selectedPlace, isMapReady, onSelectPlace]);
+
+  // Zoom / Control Handlers
+  const handleZoomIn = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.zoomIn();
+    }
   };
 
-  const handleZoomIn = () => setZoom((prev) => Math.min(prev + 0.35, 3.5));
-  const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.35, 0.8));
-  const handleReset = () => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
+  const handleZoomOut = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.zoomOut();
+    }
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    setPan({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
+  const handleFitAll = () => {
+    if (!mapInstanceRef.current || places.length === 0) return;
+    import("leaflet").then((L) => {
+      const latLngs: [number, number][] = places.map((p) => [p.lat, p.lng]);
+      const bounds = L.default.latLngBounds(latLngs);
+      mapInstanceRef.current.fitBounds(bounds, {
+        padding: [60, 60],
+        maxZoom: 11,
+        animate: true,
+      });
     });
   };
 
-  const handleMouseUp = () => setIsDragging(false);
-
-  // Pan to selected place when clicking a pin
-  const handleMarkerClick = (place: Place, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSelectPlace(place);
-    const coords = projectCoordinates(place.lat, place.lng);
-    // Center smoothly around marker
-    const centerX = 500 - coords.x;
-    const centerY = 250 - coords.y;
-    setPan({ x: centerX * 0.5, y: centerY * 0.5 });
-    if (zoom < 1.4) setZoom(1.6);
-  };
-
-  // Generate constellation connection lines between places
-  const pathCoordinates = places.map((p) => projectCoordinates(p.lat, p.lng));
-  const pathD = pathCoordinates.reduce((acc, curr, idx) => {
-    return idx === 0 ? `M ${curr.x} ${curr.y}` : `${acc} L ${curr.x} ${curr.y}`;
-  }, "");
-
   return (
     <div
-      ref={mapRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      className={`relative w-full h-[520px] sm:h-[600px] rounded-3xl bg-gradient-to-b from-[#FFF0F3] via-[#FFEAEF] to-[#FFF5F7] border border-rose-400/30 shadow-glass overflow-hidden select-none cursor-grab active:cursor-grabbing group ${className}`}
+      className={`relative w-full h-[520px] sm:h-[620px] rounded-3xl overflow-hidden border border-rose-300/40 shadow-glass select-none group ${className}`}
     >
-      {/* Delicate Grid & Star Petals Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(#E093A220_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none opacity-80" />
-      <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-white/40 pointer-events-none" />
+      {/* Actual Leaflet Map Canvas */}
+      <div ref={mapContainerRef} className="w-full h-full" />
 
-      {/* Atmospheric Horizon Glow */}
-      <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-rose-400/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* SVG Vector Map Canvas with Transformation */}
-      <div
-        className="w-full h-full origin-center transition-transform duration-300 ease-out"
-        style={{
-          transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-        }}
-      >
-        <svg
-          viewBox="0 0 1000 500"
-          className="w-full h-full overflow-visible"
-        >
-          {/* Subtle Grid Lat/Lng Latitude lines */}
-          <g className="stroke-rose-400/20 stroke-[0.75] stroke-dasharray-[3,5]">
-            <line x1="0" y1="125" x2="1000" y2="125" />
-            <line x1="0" y1="250" x2="1000" y2="250" />
-            <line x1="0" y1="375" x2="1000" y2="375" />
-            <line x1="250" y1="0" x2="250" y2="500" />
-            <line x1="500" y1="0" x2="500" y2="500" />
-            <line x1="750" y1="0" x2="750" y2="500" />
-          </g>
-
-          {/* Minimalist Stylized Continents Outlines in Soft Cream with Dusty Rose Borders */}
-          <g className="fill-white/80 stroke-rose-300/50 stroke-[1.2] shadow-sm">
-            {/* North America */}
-            <path d="M 120 100 Q 180 70 280 80 Q 290 140 240 180 Q 200 230 180 270 Q 150 220 120 160 Z" />
-            {/* South America */}
-            <path d="M 230 280 Q 300 300 320 360 Q 280 440 240 470 Q 220 380 230 280 Z" />
-            {/* Europe */}
-            <path d="M 460 100 Q 540 80 570 120 Q 540 170 480 160 Q 450 140 460 100 Z" />
-            {/* Africa */}
-            <path d="M 470 180 Q 560 180 580 250 Q 560 360 500 400 Q 450 300 470 180 Z" />
-            {/* Asia */}
-            <path d="M 580 80 Q 820 70 880 140 Q 850 250 720 250 Q 640 200 580 80 Z" />
-            {/* Japan Arc */}
-            <path d="M 850 150 Q 875 160 865 190 Q 845 180 850 150 Z" />
-            {/* Australia */}
-            <path d="M 760 330 Q 860 330 870 400 Q 790 430 750 380 Z" />
-          </g>
-
-          {/* Dusty Rose / Gold Flight Paths Constellation Lines */}
-          <path
-            d={pathD}
-            fill="none"
-            className="stroke-rose-500/60 stroke-[2] stroke-dasharray-[5,5] animate-pulse"
-          />
-
-          {/* Interactive Place Markers */}
-          {places.map((place) => {
-            const coords = projectCoordinates(place.lat, place.lng);
-            const isSelected = selectedPlace?.id === place.id;
-            const isHovered = hoveredPlace?.id === place.id;
-
-            return (
-              <g
-                key={place.id}
-                transform={`translate(${coords.x}, ${coords.y})`}
-                className="cursor-pointer group"
-                onClick={(e) => handleMarkerClick(place, e)}
-                onMouseEnter={() => setHoveredPlace(place)}
-                onMouseLeave={() => setHoveredPlace(null)}
-              >
-                {/* Outer Pulsing Aura */}
-                {isSelected && (
-                  <circle
-                    r="24"
-                    className="fill-rose-400/20 stroke-rose-500/50 stroke-[1.5] animate-ping"
-                  />
-                )}
-
-                {/* Secondary Ripple */}
-                <circle
-                  r={isSelected ? "14" : isHovered ? "12" : "8"}
-                  className={`transition-all duration-300 ${
-                    isSelected
-                      ? "fill-rose-500/30 stroke-rose-600 stroke-[2.5]"
-                      : isHovered
-                      ? "fill-rose-400/25 stroke-rose-500 stroke-[2]"
-                      : "fill-white stroke-rose-500 stroke-[1.5]"
-                  }`}
-                />
-
-                {/* Center Core Dot */}
-                <circle
-                  r={isSelected ? "5.5" : "4"}
-                  className={`transition-all ${
-                    isSelected
-                      ? "fill-rose-600 shadow-glow-rose"
-                      : "fill-rose-500"
-                  }`}
-                />
-
-                {/* City / Place Label */}
-                <text
-                  x="0"
-                  y={isSelected ? "-20" : "-14"}
-                  textAnchor="middle"
-                  className={`text-[11px] font-sans font-semibold tracking-wide transition-all duration-200 pointer-events-none ${
-                    isSelected
-                      ? "fill-rose-700 font-bold text-[12px]"
-                      : isHovered
-                      ? "fill-charcoal-800 font-semibold"
-                      : "fill-charcoal-700"
-                  }`}
-                  style={{ filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.9))" }}
-                >
-                  {place.title}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      {/* Top Left HUD: Map Info & Coordinates */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col gap-1 pointer-events-none">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-rose-300/40 backdrop-blur-md text-xs shadow-sm">
+      {/* Top Left HUD: Coordinates & Location Info */}
+      <div className="absolute top-4 left-4 z-[400] flex flex-col gap-1 pointer-events-none">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-rose-300/50 backdrop-blur-md text-xs shadow-md">
           <Compass className="w-3.5 h-3.5 text-rose-500 animate-spin-slow" />
-          <span className="font-mono text-rose-700 text-[11px] font-medium">
+          <span className="font-mono text-rose-700 text-[11px] font-semibold">
             {selectedPlace
               ? `${selectedPlace.lat.toFixed(4)}° N, ${selectedPlace.lng.toFixed(4)}° E`
-              : isRegional
-              ? "Tamil Nadu Journey Map"
-              : "Global Coordinate Matrix"}
+              : "Tamil Nadu Memory Constellation"}
           </span>
         </div>
         {selectedPlace && (
-          <span className="text-[11px] font-serif italic text-charcoal-700 pl-2 drop-shadow-sm font-medium">
+          <span className="text-[11px] font-serif italic text-charcoal-800 pl-2 drop-shadow-sm font-semibold">
             Focus: {selectedPlace.city || selectedPlace.location_name},{" "}
             {selectedPlace.country || ""}
           </span>
         )}
       </div>
 
-      {/* Top Right Controls: Zoom & Reset */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-        <button
-          onClick={handleZoomIn}
-          className="w-9 h-9 rounded-xl bg-white/90 hover:bg-white border border-rose-300/40 hover:border-rose-400 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-sm transition-all"
-          title="Zoom in"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
-        <button
-          onClick={handleZoomOut}
-          className="w-9 h-9 rounded-xl bg-white/90 hover:bg-white border border-rose-300/40 hover:border-rose-400 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-sm transition-all"
-          title="Zoom out"
-        >
-          <Minus className="w-4 h-4" />
-        </button>
-        <button
-          onClick={handleReset}
-          className="w-9 h-9 rounded-xl bg-white/90 hover:bg-white border border-rose-300/40 hover:border-rose-400 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-sm transition-all"
-          title="Reset View"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-        </button>
+      {/* Top Right Controls: Layers, Fit All, Zoom */}
+      <div className="absolute top-4 right-4 z-[400] flex flex-col items-end gap-2">
+        {/* Layer Style Switcher Button */}
+        <div className="relative">
+          <button
+            onClick={() => setShowLayerMenu((prev) => !prev)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/95 hover:bg-white border border-rose-300/50 text-charcoal-800 hover:text-rose-600 shadow-md backdrop-blur-md transition-all text-xs font-medium"
+            title="Change Map Style"
+          >
+            <Layers className="w-4 h-4 text-rose-500" />
+            <span className="hidden sm:inline">
+              {TILE_PROVIDERS[mapStyle].name}
+            </span>
+          </button>
+
+          {/* Layer Options Dropdown */}
+          <AnimatePresence>
+            {showLayerMenu && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                className="absolute right-0 top-11 w-44 rounded-2xl bg-white/98 border border-rose-200/80 shadow-2xl backdrop-blur-xl p-1.5 space-y-1 z-50"
+              >
+                {(
+                  Object.keys(TILE_PROVIDERS) as Array<MapLayerType>
+                ).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setMapStyle(key);
+                      setShowLayerMenu(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
+                      mapStyle === key
+                        ? "bg-rose-50 text-rose-700 font-semibold border border-rose-200"
+                        : "text-charcoal-700 hover:bg-rose-50/50"
+                    }`}
+                  >
+                    <span>{TILE_PROVIDERS[key].name}</span>
+                    {mapStyle === key && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    )}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Action Buttons: Fit All, Zoom In, Zoom Out */}
+        <div className="flex flex-col gap-1.5">
+          <button
+            onClick={handleFitAll}
+            className="w-9 h-9 rounded-xl bg-white/95 hover:bg-white border border-rose-300/50 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-md transition-all"
+            title="Fit All Places (Reset View)"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={handleZoomIn}
+            className="w-9 h-9 rounded-xl bg-white/95 hover:bg-white border border-rose-300/50 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-md transition-all"
+            title="Zoom in"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleZoomOut}
+            className="w-9 h-9 rounded-xl bg-white/95 hover:bg-white border border-rose-300/50 text-charcoal-800 hover:text-rose-600 flex items-center justify-center backdrop-blur-md shadow-md transition-all"
+            title="Zoom out"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Floating Selected Memory Card (Bottom Left Overlay on Desktop) */}
+      {/* Floating Selected Memory Card (Bottom Overlay) */}
       <AnimatePresence>
         {selectedPlace && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm z-20 p-4 rounded-2xl bg-white/95 border border-rose-300/50 shadow-glass backdrop-blur-xl space-y-3"
+            className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm z-[400] p-4 rounded-2xl bg-white/95 border border-rose-300/60 shadow-2xl backdrop-blur-xl space-y-3"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top thumbnail & Title */}
@@ -330,11 +389,11 @@ export function InteractiveMemoryMap({
               )}
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 text-[10px] font-mono text-rose-600 uppercase tracking-wider mb-0.5 font-semibold">
+                <div className="flex items-center gap-1.5 text-[10px] font-mono text-rose-600 uppercase tracking-wider mb-0.5 font-bold">
                   <Sparkles className="w-3 h-3 text-rose-500" />
                   <span>{selectedPlace.category}</span>
                 </div>
-                <h4 className="font-serif text-lg text-charcoal-900 font-semibold truncate">
+                <h4 className="font-serif text-lg text-charcoal-900 font-bold truncate">
                   {selectedPlace.title}
                 </h4>
                 <p className="text-[11px] text-rose-600 truncate flex items-center gap-1 font-medium">
@@ -371,3 +430,4 @@ export function InteractiveMemoryMap({
     </div>
   );
 }
+
