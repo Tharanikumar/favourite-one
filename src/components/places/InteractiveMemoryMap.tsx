@@ -77,7 +77,7 @@ export function InteractiveMemoryMap({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const polylineRef = useRef<any>(null);
 
-  const [mapStyle, setMapStyle] = useState<MapLayerType>("topo");
+  const [mapStyle, setMapStyle] = useState<MapLayerType>("osm");
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [isMapReady, setIsMapReady] = useState(false);
 
