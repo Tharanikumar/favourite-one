@@ -60,8 +60,14 @@ export async function POST(request: Request) {
       }
     }
 
-    // Default romantic anniversary fallback (e.g. 0414)
-    if (pin === DEFAULT_VAULT_PIN || pin === "0414" || pin === "1234") {
+    // Default passcode verification (feb11, case-insensitive)
+    const normalizedPin = pin.trim().toLowerCase();
+    if (
+      normalizedPin === "feb11" ||
+      normalizedPin === DEFAULT_VAULT_PIN.toLowerCase() ||
+      normalizedPin === "0414" ||
+      normalizedPin === "1234"
+    ) {
       return NextResponse.json({
         success: true,
         expiresIn: 300,
@@ -72,7 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: "Incorrect passcode. Hint: Our anniversary date (0414)",
+        error: "Incorrect passcode. Please try again.",
       },
       { status: 403 }
     );

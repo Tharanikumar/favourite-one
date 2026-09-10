@@ -10,6 +10,7 @@ import { UploadMemoryModal } from "@/components/gallery/UploadMemoryModal";
 import { MemoryEmptyState } from "@/components/gallery/MemoryEmptyState";
 import { MOCK_MEMORIES } from "@/lib/mockData";
 import { Memory } from "@/lib/supabase/types";
+import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import {
   Plus,
   Heart,
@@ -229,6 +230,8 @@ export default function GalleryPage() {
         onClose={() => setIsUploadOpen(false)}
         onAddMemory={handleAddMemory}
       />
+
+      <MobileBottomNav />
     </PageTransition>
   );
 }

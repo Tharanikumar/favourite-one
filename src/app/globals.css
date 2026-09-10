@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #FFF8F9;
-  --bg-secondary: #FFF0F3;
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --border-subtle: rgba(255, 107, 107, 0.15);
-  --border-gold: rgba(212, 163, 89, 0.35);
+  --bg-primary: #FFF7F2;
+  --bg-secondary: #FFEADB;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --border-subtle: rgba(255, 122, 107, 0.2);
+  --border-gold: rgba(245, 158, 11, 0.35);
   --border-rose: rgba(255, 107, 107, 0.3);
-  --border-coral: rgba(255, 107, 107, 0.35);
+  --border-coral: rgba(255, 117, 130, 0.35);
   --text-primary: #1F1D24;
   --text-secondary: #443F4D;
   --text-muted: #7F778A;
-  --gold-accent: #BA873C;
+  --gold-accent: #E58E26;
   --rose-accent: #FF6B6B;
-  --coral-accent: #FF6B6B;
-  --peach-accent: #FEDEC8;
+  --coral-accent: #FF7582;
+  --peach-accent: #FFB088;
   --sage-accent: #C7D7CE;
-  --mauve-accent: #D7BEDF;
+  --mauve-accent: #C77DFF;
 }
 
 * {
@@ -31,7 +31,7 @@ html {
 }
 
 body {
-  background-color: var(--bg-primary);
+  background: linear-gradient(135deg, #FFF8F3 0%, #FFEADB 25%, #FFD5CD 50%, #FFC8D7 75%, #F5E0EF 100%) fixed;
   color: var(--text-primary);
   font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
@@ -121,13 +121,19 @@ body {
   }
 
   .gold-gradient-text {
-    background: linear-gradient(135deg, #BA873C 0%, #D4A359 50%, #9C6E2B 100%);
+    background: linear-gradient(135deg, #E58E26 0%, #F59E0B 50%, #D97706 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .rose-gradient-text {
-    background: linear-gradient(135deg, #C86F82 0%, #E093A2 50%, #AB5367 100%);
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E72 35%, #FA5252 70%, #C75086 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .sunset-gradient-text {
+    background: linear-gradient(135deg, #F97316 0%, #FB7185 50%, #A855F7 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -138,3 +144,4 @@ body {
     -webkit-text-fill-color: transparent;
   }
 }
+

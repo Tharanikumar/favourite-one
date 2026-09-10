@@ -66,24 +66,25 @@ export default function HomePage() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="relative w-full h-full opacity-35"
+            className="relative w-full h-full opacity-45"
           >
             <Image
-              src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2000&q=90"
-              alt="Our Little Universe background"
+              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=90"
+              alt="Romantic Golden Sunset Horizon"
               fill
               priority
-              className="object-cover object-center filter contrast-[1.05] saturate-[1.1]"
+              className="object-cover object-center filter contrast-[1.08] saturate-[1.25]"
             />
           </motion.div>
 
-          {/* Luminous Soft Blush Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-universe-900/80 via-white/50 to-background" />
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-universe-900/40 to-background" />
+          {/* Luminous Warm Sunset Glow Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/15 via-rose-500/10 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FFF8F3] via-[#FFF8F3]/60 to-transparent" />
+          <div className="absolute inset-0 bg-radial-gradient from-amber-400/20 via-rose-400/10 to-transparent" />
         </div>
 
-        {/* Ambient Top Glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[350px] bg-gradient-radial from-rose-400/[0.15] via-peach-400/[0.1] to-transparent rounded-full blur-3xl pointer-events-none z-10" />
+        {/* Ambient Sunset Sunburst Glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[850px] h-[450px] bg-gradient-radial from-amber-300/[0.28] via-rose-400/[0.2] to-transparent rounded-full blur-3xl pointer-events-none z-10" />
 
         {/* Top Empty Spacer for Centering Balance */}
         <div className="w-full" />

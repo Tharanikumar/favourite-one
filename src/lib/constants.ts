@@ -11,16 +11,16 @@ export const APP_CONFIG = {
     quoteAuthor: "Maya Angelou",
   },
   theme: {
-    accentGold: "#BA873C",
+    accentGold: "#E58E26",
     accentRose: "#FF6B6B",
-    sunsetCoral: "#FF6B6B",
-    blushPink: "#FDE8E9",
-    softPeach: "#FEDEC8",
-    warmCream: "#FFF8F0",
+    sunsetCoral: "#FF7582",
+    blushPink: "#FFE4E6",
+    softPeach: "#FFB088",
+    warmCream: "#FFF8F3",
     sageGreen: "#C7D7CE",
-    mauve: "#D7BEDF",
+    mauve: "#C77DFF",
     charcoal: "#1F1D24",
-    bgDark: "#FFF8F9",
+    bgDark: "#FFF7F2",
   },
 };
 

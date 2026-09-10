@@ -57,14 +57,14 @@ export function OpeningExperience({
   // Timed progression through scenes 1 to 7
   useEffect(() => {
     // Scene timings in milliseconds:
-    // Scene 0 (Loading): 1300ms
-    // Scene 1 (Heart Formation): 1700ms
-    // Scene 2 (Personal Message): 1400ms
-    // Scene 3 (Memory Glimpse): 1800ms
-    // Scene 4 (Title): 1700ms
-    // Scene 5 (Emotional Hero): 2000ms
-    // Scene 6 (Entry): Holds indefinitely
-    const sceneDurations = [1300, 1700, 1400, 1800, 1700, 2000];
+    // Scene 0 (Loading): 1200ms
+    // Scene 1 (Heart Formation): 1500ms
+    // Scene 2 (Personal Message): 1200ms
+    // Scene 3 (Memory Glimpse): 1500ms
+    // Scene 4 (Title): 1500ms
+    // Scene 5 (Emotional Hero): 1800ms
+    // Scene 6 (Entry): Holds indefinitely until user clicks Enter
+    const sceneDurations = [1200, 1500, 1200, 1500, 1500, 1800];
 
     if (sceneIndex < sceneDurations.length) {
       const timer = setTimeout(() => {
@@ -91,13 +91,13 @@ export function OpeningExperience({
 
   if (isExiting) {
     return (
-      <div className="fixed inset-0 z-[100] bg-[#FFF5F8] pointer-events-none transition-opacity duration-500 opacity-0" />
+      <div className="fixed inset-0 z-[100] bg-[#FFF8F3] pointer-events-none transition-opacity duration-500 opacity-0" />
     );
   }
 
   return (
     <div
-      className="fixed inset-0 z-50 w-full h-full overflow-hidden select-none bg-[#FFF8F9]"
+      className="fixed inset-0 z-50 w-full h-full overflow-hidden select-none bg-[#FFF8F3]"
       role="region"
       aria-label="Cinematic Opening Experience"
     >
@@ -167,12 +167,12 @@ export function OpeningExperience({
         <button
           onClick={completeIntro}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/70 hover:bg-white border border-rose-300/40 text-charcoal-700 hover:text-charcoal-900 text-xs font-sans font-medium backdrop-blur-md shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-rose-400"
-          title="Skip intro animation (Esc)"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/80 hover:bg-white border border-[#E6B8B7]/60 text-[#2E2E2E] hover:text-[#C97B94] text-xs font-sans font-medium backdrop-blur-md shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#E6B8B7]"
+          title="Skip intro animation (Esc or S)"
           aria-label="Skip intro animation"
         >
           <span>Skip</span>
-          <FastForward className="w-3.5 h-3.5 text-rose-500" />
+          <FastForward className="w-3.5 h-3.5 text-[#E6A0B0]" />
         </button>
       </div>
 

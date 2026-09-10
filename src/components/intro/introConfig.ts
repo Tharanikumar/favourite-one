@@ -36,7 +36,7 @@ export const DEFAULT_INTRO_CONFIG: IntroConfig = {
   finalPrompt: "Ready to enter\nOur Little Universe?",
   finalSubtitle: "A PLACE FOR OUR STORIES, MEMORIES AND FOREVER.",
   signature: "With you always ♡",
-  audioUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
+  audioUrl: "/audio/kannukkul-unnai-vaithen.mp3",
   heroPhotoUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1600&q=80",
   memoryPhotos: [
     {

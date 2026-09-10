@@ -10,6 +10,7 @@ import { TimelineDetailModal } from "@/components/timeline/TimelineDetailModal";
 import { AddTimelineEventModal } from "@/components/timeline/AddTimelineEventModal";
 import { MOCK_TIMELINE_EVENTS } from "@/lib/mockData";
 import { TimelineEvent } from "@/lib/supabase/types";
+import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { Plus } from "lucide-react";
 
 export default function TimelinePage() {
@@ -139,6 +140,8 @@ export default function TimelinePage() {
         onClose={() => setIsAddOpen(false)}
         onAddEvent={handleAddEvent}
       />
+
+      <MobileBottomNav />
     </PageTransition>
   );
 }

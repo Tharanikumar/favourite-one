@@ -24,6 +24,8 @@ import {
   LogIn,
   ChevronDown,
 } from "lucide-react";
+import { CosmicNavMenu } from "@/components/layout/CosmicNavMenu";
+import { OpeningExperience } from "@/components/intro";
 
 const iconMap: Record<string, React.ReactNode> = {
   Sparkles: <Sparkles className="w-4 h-4" />,
@@ -44,6 +46,7 @@ export function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [showOpeningIntro, setShowOpeningIntro] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -91,7 +94,10 @@ export function Navbar() {
           scrolled ? "py-2.5" : "py-4"
         )}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
+        <div className={cn(
+          "max-w-7xl mx-auto flex items-center justify-between pointer-events-auto",
+          pathname === "/dashboard" && "lg:hidden"
+        )}>
           {/* Logo / Monogram */}
           <Link
             href="/"
@@ -272,10 +278,21 @@ export function Navbar() {
               </Link>
             )}
 
+            {/* Desktop Universe Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-xl border border-universe-750/70 hover:border-rose-400/50 text-xs text-cream-100 hover:text-rose-600 shadow-glass transition-all font-medium"
+              title="Open Cosmic Menu"
+              aria-label="Open Cosmic Navigation Menu"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+              <span className="font-sans">Menu</span>
+            </button>
+
             {/* Mobile Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-full bg-white/90 backdrop-blur-xl border border-universe-750/70 text-cream-100 shadow-glass focus:outline-none"
+              className="md:hidden p-2 rounded-full bg-white/90 backdrop-blur-xl border border-universe-750/70 text-cream-100 shadow-glass focus:outline-none hover:text-rose-600"
               aria-label="Toggle Navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -284,104 +301,18 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Drawer Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-x-4 top-16 z-50 md:hidden rounded-3xl bg-white/95 backdrop-blur-2xl border border-universe-750/70 shadow-2xl p-6 overflow-hidden max-h-[85vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between pb-4 border-b border-universe-750/50 mb-4">
-              <div>
-                <span className="font-serif text-lg text-cream-50 font-normal block">
-                  {APP_CONFIG.name}
-                </span>
-                <span className="text-[10px] uppercase tracking-widest text-rose-600 font-mono">
-                  {isAuthenticated ? `Signed in as ${displayName}` : "Private Sanctuary"}
-                </span>
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-cream-300 hover:text-rose-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+      {/* Fullscreen Romantic Opening Experience if triggered */}
+      {showOpeningIntro && (
+        <OpeningExperience onComplete={() => setShowOpeningIntro(false)} />
+      )}
 
-            <nav className="grid grid-cols-1 gap-2">
-              {NAV_ITEMS.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center justify-between p-3 rounded-2xl text-sm transition-all duration-200",
-                      isActive
-                        ? "bg-rose-500/15 text-rose-700 border border-rose-400/30 font-medium"
-                        : "text-cream-200 hover:bg-rose-50/80 border border-transparent"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "p-2 rounded-xl",
-                          isActive ? "bg-rose-500 text-white shadow-glow-rose" : "bg-universe-900 text-cream-300"
-                        )}
-                      >
-                        {iconMap[item.iconName]}
-                      </div>
-                      <div>
-                        <div className="font-medium text-cream-50">{item.name}</div>
-                        <div className="text-[11px] text-cream-300">{item.description}</div>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 p-3 rounded-2xl text-sm bg-rose-500/15 text-rose-700 border border-rose-500/30 mt-2 font-medium"
-                >
-                  <ShieldCheck className="w-5 h-5 text-rose-600" />
-                  <div>
-                    <div className="font-medium text-rose-700">Admin Control Panel</div>
-                    <div className="text-[11px] text-rose-600/80">Manage all content &amp; media</div>
-                  </div>
-                </Link>
-              )}
-            </nav>
-
-            <div className="mt-6 pt-4 border-t border-universe-750/50 flex items-center justify-between">
-              {isAuthenticated ? (
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 text-xs text-rose-600 hover:text-rose-700 font-medium"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </button>
-              ) : (
-                <Link
-                  href="/auth/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 text-xs text-rose-600 font-medium"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Sign In</span>
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Cosmic Navigation Drawer for Mobile / Tablet */}
+      <CosmicNavMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        mode="drawer"
+        onPlayOpening={() => setShowOpeningIntro(true)}
+      />
     </>
   );
 }

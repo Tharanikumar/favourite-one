@@ -3,7 +3,7 @@
  * Uses the Web Crypto API for secure SHA-256 salted PIN hashing without external binary dependencies.
  */
 
-export const DEFAULT_VAULT_PIN = "0414"; // Default romantic anniversary PIN
+export const DEFAULT_VAULT_PIN = "feb11"; // Default secret passcode (feb11)
 export const VAULT_AUTO_LOCK_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 /**

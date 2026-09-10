@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Lock, KeyRound, ShieldCheck, AlertCircle } from "lucide-react";
+import { Lock, KeyRound, ShieldCheck, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 interface VaultOpeningAnimationProps {
   onUnlockSuccess: () => void;
@@ -12,14 +12,15 @@ interface VaultOpeningAnimationProps {
 
 export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimationProps) {
   const [pin, setPin] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isUnlockingAnim, setIsUnlockingAnim] = useState(false);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pin || pin.length < 4) {
-      setErrorMsg("Please enter at least 4 digits");
+    if (!pin || pin.trim().length < 3) {
+      setErrorMsg("Please enter your secret passcode");
       return;
     }
 
@@ -49,12 +50,6 @@ export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimation
     } catch {
       setErrorMsg("Verification server error");
       setIsVerifying(false);
-    }
-  };
-
-  const handleQuickKey = (digit: string) => {
-    if (pin.length < 6) {
-      setPin((prev) => prev + digit);
     }
   };
 
@@ -120,22 +115,33 @@ export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimation
             Sanctuary Vault Access
           </h3>
           <p className="text-xs text-cream-300 font-sans">
-            Enter your secret 4-digit key to open confidential memos, unreleased photos, and sealed letters.
+            Enter your secret passcode to open confidential memos, unreleased photos, and sealed letters.
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleVerify} className="space-y-4">
           <div className="space-y-2">
-            <input
-              type="password"
-              maxLength={6}
-              placeholder="••••"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              className="w-full text-center tracking-[0.6em] font-mono text-2xl py-3 rounded-2xl bg-white border border-rose-400/40 text-rose-700 focus:outline-none focus:border-rose-500 shadow-sm"
-              autoFocus
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                maxLength={20}
+                placeholder="••••••••"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className="w-full text-center tracking-[0.4em] font-mono text-2xl py-3 px-12 rounded-2xl bg-white border border-rose-400/40 text-rose-700 focus:outline-none focus:border-rose-500 shadow-sm"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                title={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
 
             {errorMsg && (
               <p className="text-xs text-rose-600 flex items-center justify-center gap-1 font-sans font-medium">
@@ -153,37 +159,25 @@ export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimation
             disabled={isVerifying || isUnlockingAnim}
             icon={<KeyRound className="w-4 h-4" />}
           >
-            {isVerifying ? "Verifying Token..." : "Unlock Vault"}
+            {isVerifying ? "Verifying..." : "Unlock Vault"}
           </Button>
         </form>
 
-        {/* Numeric keypad shortcuts */}
-        <div className="mt-6 pt-5 border-t border-universe-750/50">
-          <div className="grid grid-cols-3 gap-2 max-w-[240px] mx-auto mb-3">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => handleQuickKey(n.toString())}
-                className={`py-2 rounded-xl bg-universe-900 border border-universe-750/60 hover:border-rose-400 text-cream-100 font-mono text-sm hover:text-rose-600 transition-all font-medium ${
-                  n === 0 ? "col-start-2" : ""
-                }`}
-              >
-                {n}
-              </button>
-            ))}
+        {/* Footer info */}
+        <div className="mt-6 pt-4 border-t border-universe-750/50 flex items-center justify-between text-xs text-slate-500 font-sans px-1">
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+            <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
+            <span>Encrypted Chamber</span>
           </div>
-
-          <div className="flex items-center justify-between text-[11px] text-cream-400 pt-2 border-t border-universe-750/40">
-            <span>Anniversary Key: 0414</span>
+          {pin && (
             <button
               type="button"
               onClick={() => setPin("")}
-              className="text-rose-600 hover:text-rose-700 font-medium"
+              className="text-slate-500 hover:text-rose-600 font-medium text-xs transition-colors"
             >
-              Clear Key
+              Clear
             </button>
-          </div>
+          )}
         </div>
       </Card>
     </div>

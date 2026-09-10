@@ -473,7 +473,7 @@ export const MOCK_FUTURE_ITEMS: FutureItem[] = [
     target_date: "2027-06-01",
     status: "In Progress",
     is_completed: false,
-    image_url: "https://images.unsplash.com/photo-1507842229451-77b5a86d2673?auto=format&fit=crop&w=1200&q=80",
+    image_url: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1200&q=80",
     created_at: "2024-03-01T09:00:00Z",
   },
   {
