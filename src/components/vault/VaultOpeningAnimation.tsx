@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { verifyVaultPin } from "@/lib/vault";
 import { Lock, KeyRound, ShieldCheck, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 interface VaultOpeningAnimationProps {
@@ -28,16 +29,10 @@ export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimation
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/vault/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin }),
-      });
+      const isValid = await verifyVaultPin(pin);
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setErrorMsg(data.error || "Incorrect vault passcode");
+      if (!isValid) {
+        setErrorMsg("Incorrect vault passcode");
         setIsVerifying(false);
         return;
       }
@@ -48,7 +43,7 @@ export function VaultOpeningAnimation({ onUnlockSuccess }: VaultOpeningAnimation
         onUnlockSuccess();
       }, 1600);
     } catch {
-      setErrorMsg("Verification server error");
+      setErrorMsg("Verification error");
       setIsVerifying(false);
     }
   };

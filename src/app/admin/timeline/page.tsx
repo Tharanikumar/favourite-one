@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { MediaUploader } from "@/components/admin/MediaUploader";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_TIMELINE_EVENTS } from "@/lib/mockData";
-import { TimelineEvent } from "@/lib/supabase/types";
+import { TimelineEvent } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Plus, Edit2, Trash2, Calendar } from "lucide-react";

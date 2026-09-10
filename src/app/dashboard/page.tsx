@@ -20,7 +20,6 @@ import { CosmicNavMenu } from "@/components/layout/CosmicNavMenu";
 import {
   Clock,
   Camera,
-  MapPin,
   Heart,
   ArrowRight,
   Calendar,
@@ -679,6 +678,83 @@ export default function DashboardPage() {
               </Button>
             </div>
           </form>
+        </Modal>
+
+        {/* Quick Search Modal */}
+        <Modal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          title="Search Sanctuary"
+          subtitle="Find memories, letters, places, and aspirations."
+          size="md"
+        >
+          <div className="space-y-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search across all memories & letters..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl bg-white border border-rose-200/80 px-4 py-3 text-sm text-charcoal-900 focus:outline-none focus:border-rose-400 shadow-sm pl-10"
+                autoFocus
+              />
+              <Search className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5" />
+            </div>
+
+            {searchQuery.trim() && (
+              <div className="space-y-2 max-h-60 overflow-y-auto pt-2">
+                {MOCK_MEMORIES.filter((m) =>
+                  m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  m.description.toLowerCase().includes(searchQuery.toLowerCase())
+                ).slice(0, 4).map((m) => (
+                  <div
+                    key={m.id}
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setActiveMemoryModal(m);
+                    }}
+                    className="p-3 rounded-xl bg-rose-50/50 hover:bg-rose-100/50 cursor-pointer transition-colors border border-rose-100 flex items-center justify-between"
+                  >
+                    <div>
+                      <h4 className="text-xs font-serif text-charcoal-900">{m.title}</h4>
+                      <p className="text-[11px] text-charcoal-500 line-clamp-1">{m.description}</p>
+                    </div>
+                    <span className="text-[10px] text-rose-500 font-mono">{formatDate(m.date)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </Modal>
+
+        {/* Notifications Modal */}
+        <Modal
+          isOpen={isNotificationsOpen}
+          onClose={() => setIsNotificationsOpen(false)}
+          title="Sanctuary Whispers"
+          subtitle="Recent updates and moments recorded in our constellation."
+          size="sm"
+        >
+          <div className="space-y-3 py-2">
+            <div className="p-3 rounded-xl bg-rose-50/60 border border-rose-100 space-y-1">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                <span className="text-xs font-serif text-charcoal-900">Milestone reached!</span>
+              </div>
+              <p className="text-[11px] text-charcoal-500 font-sans">
+                &ldquo;First Time We Said I Love You&rdquo; anniversary is coming up soon.
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-100 space-y-1">
+              <div className="flex items-center gap-2">
+                <Heart className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-xs font-serif text-charcoal-900">Unread Letter</span>
+              </div>
+              <p className="text-[11px] text-charcoal-500 font-sans">
+                You have an unsealed letter waiting in the Sanctuary.
+              </p>
+            </div>
+          </div>
         </Modal>
       </div>
     </PageTransition>

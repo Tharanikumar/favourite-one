@@ -3,7 +3,7 @@
 import React from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Letter } from "@/lib/supabase/types";
+import { Letter } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import {
   Lock,

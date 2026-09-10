@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -18,20 +17,11 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setLoading(true);
 
-    if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
-      if (error) {
-        toast.error("Reset request failed", error.message);
-        setLoading(false);
-        return;
-      }
-    }
-
-    setLoading(false);
-    setSubmitted(true);
-    toast.success("Recovery Email Sent", "Check your inbox for password reset instructions.");
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+      toast.success("Recovery Email Sent", "Check your inbox for password reset instructions.");
+    }, 400);
   };
 
   return (

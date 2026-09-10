@@ -2,8 +2,8 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { Memory } from "@/lib/supabase/types";
-import { uploadMemoryMedia } from "@/lib/supabase/storage";
+import { Memory } from "@/lib/types";
+import { uploadMemoryMedia } from "@/lib/storage";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import {
@@ -157,7 +157,7 @@ export function UploadMemoryModal({
                 Click to choose photo or video
               </div>
               <div className="text-xs text-cream-400">
-                Supports JPG, PNG, WEBP, MP4, MOV (Processed via Supabase Storage)
+                Supports JPG, PNG, WEBP, MP4, MOV (Client preview & storage)
               </div>
             </div>
           )}

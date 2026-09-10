@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Memory } from "@/lib/supabase/types";
+import { Memory } from "@/lib/types";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
 import {

@@ -8,7 +8,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { MOCK_PLACES } from "@/lib/mockData";
-import { Place } from "@/lib/supabase/types";
+import { Place } from "@/lib/types";
 import { InteractiveMemoryMap } from "@/components/places/InteractiveMemoryMap";
 import { PlaceCard } from "@/components/places/PlaceCard";
 import { PlaceMemoryModal } from "@/components/places/PlaceMemoryModal";

@@ -8,7 +8,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { MOCK_LETTERS } from "@/lib/mockData";
-import { Letter } from "@/lib/supabase/types";
+import { Letter } from "@/lib/types";
 import { LetterCard } from "@/components/letters/LetterCard";
 import { LetterReaderModal } from "@/components/letters/LetterReaderModal";
 import { ComposeLetterModal } from "@/components/letters/ComposeLetterModal";

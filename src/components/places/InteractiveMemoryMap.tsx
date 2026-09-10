@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Place } from "@/lib/supabase/types";
+import { Place } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import {
   MapPin,

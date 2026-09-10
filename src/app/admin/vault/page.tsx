@@ -9,7 +9,7 @@ import { MediaUploader } from "@/components/admin/MediaUploader";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { VaultPinModal } from "@/components/vault/VaultPinModal";
 import { MOCK_VAULT_ITEMS } from "@/lib/mockData";
-import { VaultItem, VaultCategory, VaultMediaType } from "@/lib/supabase/types";
+import { VaultItem, VaultCategory, VaultMediaType } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/lib/toast/ToastContext";
 import {

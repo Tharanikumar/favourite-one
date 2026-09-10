@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { AddEditFutureItemModal } from "@/components/future/AddEditFutureItemModal";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_FUTURE_ITEMS } from "@/lib/mockData";
-import { FutureItem, FutureCategory, FutureStatus } from "@/lib/supabase/types";
+import { FutureItem, FutureCategory, FutureStatus } from "@/lib/types";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Plus, Edit2, Trash2, Calendar } from "lucide-react";
 

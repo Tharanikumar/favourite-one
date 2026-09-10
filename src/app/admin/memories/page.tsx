@@ -9,7 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { MediaUploader } from "@/components/admin/MediaUploader";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_MEMORIES } from "@/lib/mockData";
-import { Memory } from "@/lib/supabase/types";
+import { Memory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/lib/toast/ToastContext";
 import {

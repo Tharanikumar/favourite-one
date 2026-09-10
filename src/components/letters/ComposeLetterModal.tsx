@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { Letter, LetterCategory } from "@/lib/supabase/types";
+import { Letter, LetterCategory } from "@/lib/types";
 import {
   Sparkles,
   Lock,

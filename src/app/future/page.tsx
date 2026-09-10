@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { PageTransition } from "@/components/layout/PageTransition";
@@ -10,8 +10,7 @@ import { FutureStatsHeader } from "@/components/future/FutureStatsHeader";
 import { FutureItemCard } from "@/components/future/FutureItemCard";
 import { AddEditFutureItemModal } from "@/components/future/AddEditFutureItemModal";
 import { MOCK_FUTURE_ITEMS } from "@/lib/mockData";
-import { FutureItem, FutureCategory, FutureStatus } from "@/lib/supabase/types";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { FutureItem, FutureCategory, FutureStatus } from "@/lib/types";
 import { useToast } from "@/lib/toast/ToastContext";
 import {
   Plus,
@@ -33,27 +32,6 @@ export default function FuturePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<FutureItem | null>(null);
 
-  // Load from Supabase if configured
-  useEffect(() => {
-    async function fetchItems() {
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from("future_items")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-          if (!error && data && data.length > 0) {
-            setItems(data as FutureItem[]);
-          }
-        } catch (e) {
-          console.warn("Could not fetch future_items from Supabase:", e);
-        }
-      }
-    }
-
-    fetchItems();
-  }, []);
 
   // Filtered and Sorted Items
   const filteredItems = useMemo(() => {
@@ -130,23 +108,6 @@ export default function FuturePage() {
     if (willBeCompleted) {
       toast.success("Dream Fulfilled!", `"${target.title}" marked as completed.`);
     }
-
-    // Persist to Supabase
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase
-          .from("future_items")
-          .update({
-            is_completed: willBeCompleted,
-            status: newStatus,
-            completed_date: completedDate,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", id);
-      } catch (err) {
-        console.warn("Supabase update error:", err);
-      }
-    }
   };
 
   // Add / Edit save handler
@@ -157,14 +118,6 @@ export default function FuturePage() {
         prev.map((i) => (i.id === data.id ? ({ ...i, ...data } as FutureItem) : i))
       );
       toast.success("Aspiration Updated", `"${data.title}" updated.`);
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          await supabase.from("future_items").update(data).eq("id", data.id);
-        } catch (e) {
-          console.warn("Supabase update error:", e);
-        }
-      }
     } else {
       // Create new
       const newItem: FutureItem = {
@@ -182,22 +135,6 @@ export default function FuturePage() {
 
       setItems((prev) => [newItem, ...prev]);
       toast.success("New Dream Added", `"${newItem.title}" added to our constellation.`);
-
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { data: inserted } = await supabase
-            .from("future_items")
-            .insert(newItem)
-            .select()
-            .single();
-
-          if (inserted) {
-            setItems((prev) => prev.map((i) => (i.id === newItem.id ? (inserted as FutureItem) : i)));
-          }
-        } catch (e) {
-          console.warn("Supabase insert error:", e);
-        }
-      }
     }
   };
 
@@ -206,14 +143,6 @@ export default function FuturePage() {
     const item = items.find((i) => i.id === id);
     setItems((prev) => prev.filter((i) => i.id !== id));
     toast.info("Aspiration Removed", item?.title);
-
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from("future_items").delete().eq("id", id);
-      } catch (e) {
-        console.warn("Supabase delete error:", e);
-      }
-    }
   };
 
   const categories = [

@@ -9,7 +9,7 @@ import { MemoryLightbox } from "@/components/gallery/MemoryLightbox";
 import { UploadMemoryModal } from "@/components/gallery/UploadMemoryModal";
 import { MemoryEmptyState } from "@/components/gallery/MemoryEmptyState";
 import { MOCK_MEMORIES } from "@/lib/mockData";
-import { Memory } from "@/lib/supabase/types";
+import { Memory } from "@/lib/types";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import {
   Plus,
@@ -224,7 +224,7 @@ export default function GalleryPage() {
         hasNext={activeMemoryIndex !== null && activeMemoryIndex < filteredMemories.length - 1}
       />
 
-      {/* Upload Memory Modal with Supabase Storage Integration */}
+      {/* Upload Memory Modal */}
       <UploadMemoryModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}

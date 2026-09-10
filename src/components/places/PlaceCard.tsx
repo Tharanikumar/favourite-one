@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Place } from "@/lib/supabase/types";
+import { Place } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import {
   MapPin,

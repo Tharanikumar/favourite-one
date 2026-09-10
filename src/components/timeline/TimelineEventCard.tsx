@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { TimelineEvent } from "@/lib/supabase/types";
+import { TimelineEvent } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";

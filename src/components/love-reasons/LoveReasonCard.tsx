@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { LoveReason } from "@/lib/supabase/types";
+import { LoveReason } from "@/lib/types";
 import { Mic, ImageIcon, Sparkles, Star } from "lucide-react";
 
 interface LoveReasonCardProps {

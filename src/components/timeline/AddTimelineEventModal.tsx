@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { TimelineEvent } from "@/lib/supabase/types";
+import { TimelineEvent } from "@/lib/types";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Send } from "lucide-react";

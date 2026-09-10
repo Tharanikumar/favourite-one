@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { LoveReason, LoveReasonCategory } from "@/lib/supabase/types";
+import { LoveReason, LoveReasonCategory } from "@/lib/types";
 import { Send, Sparkles, Image as ImageIcon, Mic } from "lucide-react";
 
 interface AddLoveReasonModalProps {

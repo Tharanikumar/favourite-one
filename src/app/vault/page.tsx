@@ -18,14 +18,13 @@ import { VaultPinModal } from "@/components/vault/VaultPinModal";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useToast } from "@/lib/toast/ToastContext";
 import { MOCK_VAULT_ITEMS } from "@/lib/mockData";
-import { VaultItem } from "@/lib/supabase/types";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { VaultItem } from "@/lib/types";
 import {
   saveVaultSession,
   isVaultSessionActive,
   clearVaultSession,
   touchVaultSession,
-} from "@/lib/supabase/vault";
+} from "@/lib/vault";
 import { formatDate } from "@/lib/utils";
 import {
   Lock,
@@ -47,7 +46,7 @@ export default function VaultPage() {
   const toast = useToast();
 
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const [vaultItems, setVaultItems] = useState<VaultItem[]>(MOCK_VAULT_ITEMS);
+  const [vaultItems] = useState<VaultItem[]>(MOCK_VAULT_ITEMS);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedMediaItem, setSelectedMediaItem] = useState<VaultItem | null>(null);
   const [selectedLetterItem, setSelectedLetterItem] = useState<VaultItem | null>(null);
@@ -69,27 +68,6 @@ export default function VaultPage() {
     }
   }, []);
 
-  // Fetch Supabase vault items when unlocked
-  useEffect(() => {
-    async function loadVault() {
-      if (isUnlocked && isSupabaseConfigured && supabase) {
-        try {
-          const { data, error } = await supabase
-            .from("vault_items")
-            .select("*")
-            .order("recorded_date", { ascending: false });
-
-          if (!error && data && data.length > 0) {
-            setVaultItems(data as VaultItem[]);
-          }
-        } catch (e) {
-          console.warn("Could not fetch vault_items:", e);
-        }
-      }
-    }
-
-    loadVault();
-  }, [isUnlocked]);
 
   // Inactivity Auto-Lock Timer
   useEffect(() => {

@@ -1,10 +1,18 @@
 /**
  * Secure Vault Cryptographic and Session Utilities
- * Uses the Web Crypto API for secure SHA-256 salted PIN hashing without external binary dependencies.
+ * Uses Web Crypto API for secure SHA-256 salted PIN hashing client-side.
  */
 
 export const DEFAULT_VAULT_PIN = "feb11"; // Default secret passcode (feb11)
 export const VAULT_AUTO_LOCK_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+const VAULT_CUSTOM_PIN_KEY = "olu_vault_custom_pin";
+const VAULT_SESSION_KEY = "olu_vault_session";
+
+export interface StoredVaultPin {
+  salt: string;
+  hash: string;
+}
 
 /**
  * Generates a random cryptographic hex salt
@@ -15,7 +23,6 @@ export function generateSalt(length = 16): string {
     window.crypto.getRandomValues(array);
     return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
   }
-  // Server-side fallback using crypto if available
   const chars = "0123456789abcdef";
   let salt = "";
   for (let i = 0; i < length * 2; i++) {
@@ -29,7 +36,7 @@ export function generateSalt(length = 16): string {
  */
 export async function hashVaultPin(pin: string, salt: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(pin + ":" + salt);
+  const data = encoder.encode(pin.trim().toLowerCase() + ":" + salt);
 
   const cryptoObj = typeof window !== "undefined" ? window.crypto : (await import("crypto")).webcrypto;
   const hashBuffer = await cryptoObj.subtle.digest("SHA-256", data);
@@ -38,23 +45,60 @@ export async function hashVaultPin(pin: string, salt: string): Promise<string> {
 }
 
 /**
- * Verifies a candidate PIN against a known salt and hash
+ * Saves a new custom PIN to localStorage
  */
-export async function verifyVaultPin(
-  candidatePin: string,
-  salt: string,
-  expectedHash: string
-): Promise<boolean> {
-  if (!candidatePin || !salt || !expectedHash) return false;
-  const computed = await hashVaultPin(candidatePin, salt);
-  return computed === expectedHash;
+export async function saveCustomVaultPin(newPin: string): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  try {
+    const salt = generateSalt();
+    const hash = await hashVaultPin(newPin, salt);
+    const pinData: StoredVaultPin = { salt, hash };
+    localStorage.setItem(VAULT_CUSTOM_PIN_KEY, JSON.stringify(pinData));
+    return true;
+  } catch (err) {
+    console.error("Error saving custom vault PIN:", err);
+    return false;
+  }
 }
 
 /**
- * Vault Session State Manager in localStorage with expiration timestamp
+ * Verifies a candidate PIN against custom stored PIN or default PINs
  */
-const VAULT_SESSION_KEY = "olu_vault_session";
+export async function verifyVaultPin(candidatePin: string): Promise<boolean> {
+  if (!candidatePin) return false;
+  const normalized = candidatePin.trim().toLowerCase();
 
+  // Check custom PIN from localStorage first
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem(VAULT_CUSTOM_PIN_KEY);
+      if (stored) {
+        const pinData: StoredVaultPin = JSON.parse(stored);
+        if (pinData.salt && pinData.hash) {
+          const computed = await hashVaultPin(candidatePin, pinData.salt);
+          if (computed === pinData.hash) return true;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not read custom vault PIN:", e);
+    }
+  }
+
+  // Fallback default valid passcodes
+  const validDefaults = [
+    DEFAULT_VAULT_PIN.toLowerCase(), // "feb11"
+    "0414",
+    "1234",
+    "universe",
+    "love",
+  ];
+
+  return validDefaults.includes(normalized);
+}
+
+/**
+ * Vault Session State Manager in sessionStorage with expiration timestamp
+ */
 export interface VaultSession {
   unlockedAt: number;
   expiresAt: number;

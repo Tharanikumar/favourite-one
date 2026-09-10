@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { FutureItem, FutureStatus } from "@/lib/supabase/types";
+import { FutureItem, FutureStatus } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";

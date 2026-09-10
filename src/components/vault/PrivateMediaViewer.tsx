@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { VaultItem } from "@/lib/supabase/types";
+import { VaultItem } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { Shield, Lock, Sparkles } from "lucide-react";
 
@@ -16,43 +16,13 @@ interface PrivateMediaViewerProps {
 
 export function PrivateMediaViewer({ item, onClose }: PrivateMediaViewerProps) {
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
-  const [loadingMedia, setLoadingMedia] = useState(false);
 
   useEffect(() => {
-    if (!item?.media_url) {
-      setResolvedUrl(null);
-      return;
-    }
-
-    // If media_url is already a public / mock url, use directly
-    if (item.media_url.startsWith("http") || item.media_url.startsWith("/")) {
+    if (item?.media_url) {
       setResolvedUrl(item.media_url);
-      return;
+    } else {
+      setResolvedUrl(null);
     }
-
-    // Otherwise fetch temporary signed URL from server API
-    async function fetchSigned() {
-      setLoadingMedia(true);
-      try {
-        const res = await fetch("/api/vault/media-url", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ path: item?.media_url }),
-        });
-        const data = await res.json();
-        if (data.signedUrl) {
-          setResolvedUrl(data.signedUrl);
-        } else {
-          setResolvedUrl(item?.media_url || null);
-        }
-      } catch {
-        setResolvedUrl(item?.media_url || null);
-      } finally {
-        setLoadingMedia(false);
-      }
-    }
-
-    fetchSigned();
   }, [item]);
 
   if (!item) return null;
@@ -74,12 +44,7 @@ export function PrivateMediaViewer({ item, onClose }: PrivateMediaViewerProps) {
       >
         {/* Media Container */}
         <div className="relative rounded-2xl overflow-hidden bg-universe-950 border border-white/[0.08] min-h-[260px] flex items-center justify-center">
-          {loadingMedia ? (
-            <div className="flex flex-col items-center gap-2 p-8 text-cream-400">
-              <Shield className="w-8 h-8 text-gold-400 animate-pulse" />
-              <span className="text-xs font-mono">Decrypting protected stream...</span>
-            </div>
-          ) : isVideo ? (
+          {isVideo ? (
             <video
               src={resolvedUrl || ""}
               controls

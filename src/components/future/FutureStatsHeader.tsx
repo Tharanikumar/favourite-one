@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
-import { FutureItem } from "@/lib/supabase/types";
+import { FutureItem } from "@/lib/types";
 import { Sparkles, CheckCircle2, Compass, Target } from "lucide-react";
 
 interface FutureStatsHeaderProps {

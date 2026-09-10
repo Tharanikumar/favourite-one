@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/lib/toast/ToastContext";
+import { saveCustomVaultPin } from "@/lib/vault";
 import { ShieldCheck } from "lucide-react";
 
 interface VaultPinModalProps {
@@ -33,21 +34,15 @@ export function VaultPinModal({ isOpen, onClose }: VaultPinModalProps) {
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/vault/set-pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newPin }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || data.error) {
-        setErrorMsg(data.error || "Failed to update passcode");
-      } else {
+      const success = await saveCustomVaultPin(newPin);
+      if (success) {
         toast.success("Passcode Updated", "Your vault key has been securely re-encrypted.");
         onClose();
+      } else {
+        setErrorMsg("Failed to update passcode");
       }
     } catch {
-      setErrorMsg("Network error updating passcode");
+      setErrorMsg("Error updating passcode");
     } finally {
       setLoading(false);
     }

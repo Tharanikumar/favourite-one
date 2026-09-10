@@ -1,4 +1,4 @@
-import { Memory, Letter, Milestone, TimelineEvent, Place, FutureItem, VaultItem, LoveReason } from "./supabase/types";
+import { Memory, Letter, Milestone, TimelineEvent, Place, FutureItem, VaultItem, LoveReason } from "./types";
 
 export const MOCK_MEMORIES: Memory[] = [
   {

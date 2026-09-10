@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { LoveReason } from "@/lib/supabase/types";
+import { LoveReason } from "@/lib/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { VoiceNotePlayer } from "@/components/ui/VoiceNotePlayer";

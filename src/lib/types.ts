@@ -154,7 +154,6 @@ export type FutureItem = {
   updated_at?: string;
 };
 
-// Backwards compatibility alias for bucket list
 export type BucketItem = FutureItem;
 
 export type VaultCategory =
@@ -226,95 +225,4 @@ export type LoveReason = {
   tags?: string[];
   created_at?: string;
   updated_at?: string;
-};
-
-export type Database = {
-  public: {
-    Tables: {
-      profiles: {
-        Row: Profile;
-        Insert: Partial<Profile>;
-        Update: Partial<Profile>;
-        Relationships: [];
-      };
-      memories: {
-        Row: Memory;
-        Insert: Partial<Memory>;
-        Update: Partial<Memory>;
-        Relationships: [];
-      };
-      memory_media: {
-        Row: MemoryMedia;
-        Insert: Partial<MemoryMedia>;
-        Update: Partial<MemoryMedia>;
-        Relationships: [];
-      };
-      letters: {
-        Row: Letter;
-        Insert: Partial<Letter>;
-        Update: Partial<Letter>;
-        Relationships: [];
-      };
-      milestones: {
-        Row: Milestone;
-        Insert: Partial<Milestone>;
-        Update: Partial<Milestone>;
-        Relationships: [];
-      };
-      timeline_events: {
-        Row: TimelineEvent;
-        Insert: Partial<TimelineEvent>;
-        Update: Partial<TimelineEvent>;
-        Relationships: [];
-      };
-      places: {
-        Row: Place;
-        Insert: Partial<Place>;
-        Update: Partial<Place>;
-        Relationships: [];
-      };
-      future_items: {
-        Row: FutureItem;
-        Insert: Partial<FutureItem>;
-        Update: Partial<FutureItem>;
-        Relationships: [];
-      };
-      bucket_list: {
-        Row: FutureItem;
-        Insert: Partial<FutureItem>;
-        Update: Partial<FutureItem>;
-        Relationships: [];
-      };
-      vault_items: {
-        Row: VaultItem;
-        Insert: Partial<VaultItem>;
-        Update: Partial<VaultItem>;
-        Relationships: [];
-      };
-      vault_media: {
-        Row: VaultMedia;
-        Insert: Partial<VaultMedia>;
-        Update: Partial<VaultMedia>;
-        Relationships: [];
-      };
-      love_reasons: {
-        Row: LoveReason;
-        Insert: Partial<LoveReason>;
-        Update: Partial<LoveReason>;
-        Relationships: [];
-      };
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
 };

@@ -12,8 +12,6 @@ import {
   MapPin,
   Star,
   Lock,
-  Sparkles,
-  Play,
   ChevronRight,
   X,
   Heart,
@@ -160,7 +158,6 @@ export function CosmicNavMenu({
   onClose,
   mode = "drawer",
   variant = "light",
-  onPlayOpening,
   className,
 }: CosmicNavMenuProps) {
   const pathname = usePathname();

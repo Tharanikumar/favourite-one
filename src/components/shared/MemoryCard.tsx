@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Memory } from "@/lib/supabase/types";
+import { Memory } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { CinematicImage } from "@/components/ui/CinematicImage";

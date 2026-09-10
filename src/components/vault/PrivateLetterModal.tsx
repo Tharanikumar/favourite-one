@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { VaultItem } from "@/lib/supabase/types";
+import { VaultItem } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { Clock, Feather } from "lucide-react";
 

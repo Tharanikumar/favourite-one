@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_LETTERS } from "@/lib/mockData";
-import { Letter, LetterCategory } from "@/lib/supabase/types";
+import { Letter, LetterCategory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Plus, Edit2, Trash2, Feather, Lock } from "lucide-react";

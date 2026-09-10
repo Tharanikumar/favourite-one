@@ -8,7 +8,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { MOCK_LOVE_REASONS } from "@/lib/mockData";
-import { LoveReason } from "@/lib/supabase/types";
+import { LoveReason } from "@/lib/types";
 import { LoveReasonCard } from "@/components/love-reasons/LoveReasonCard";
 import { LoveReasonExpandedModal } from "@/components/love-reasons/LoveReasonExpandedModal";
 import { AddLoveReasonModal } from "@/components/love-reasons/AddLoveReasonModal";

@@ -9,7 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { MediaUploader } from "@/components/admin/MediaUploader";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_PLACES } from "@/lib/mockData";
-import { Place, PlaceCategory } from "@/lib/supabase/types";
+import { Place, PlaceCategory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Plus, Edit2, Trash2, MapPin } from "lucide-react";

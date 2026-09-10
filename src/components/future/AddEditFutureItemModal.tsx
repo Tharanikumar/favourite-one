@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { FutureItem, FutureCategory, FutureStatus } from "@/lib/supabase/types";
-import { uploadMemoryMedia } from "@/lib/supabase/storage";
+import { FutureItem, FutureCategory, FutureStatus } from "@/lib/types";
+import { uploadMemoryMedia } from "@/lib/storage";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Sparkles, Upload } from "lucide-react";
 

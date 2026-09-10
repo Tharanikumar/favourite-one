@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { MediaUploader } from "@/components/admin/MediaUploader";
 import { DeleteConfirmModal } from "@/components/admin/DeleteConfirmModal";
 import { MOCK_LOVE_REASONS } from "@/lib/mockData";
-import { LoveReason, LoveReasonCategory } from "@/lib/supabase/types";
+import { LoveReason, LoveReasonCategory } from "@/lib/types";
 import { useToast } from "@/lib/toast/ToastContext";
 import { Plus, Edit2, Trash2, Heart } from "lucide-react";
 
