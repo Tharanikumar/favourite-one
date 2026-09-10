@@ -87,6 +87,7 @@ export async function verifyVaultPin(candidatePin: string): Promise<boolean> {
   // Fallback default valid passcodes
   const validDefaults = [
     DEFAULT_VAULT_PIN.toLowerCase(), // "feb11"
+    "0331",
     "0414",
     "1234",
     "universe",

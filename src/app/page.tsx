@@ -419,7 +419,7 @@ export default function HomePage() {
           {[
             {
               title: "Our Anniversary",
-              date: "April 14",
+              date: "March 31",
               year: "Annual Celebration",
               description: "The day our universe aligned and our journey officially began.",
               icon: <Sparkles className="w-5 h-5 text-gold-400" />,

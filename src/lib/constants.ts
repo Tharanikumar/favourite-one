@@ -5,8 +5,8 @@ export const APP_CONFIG = {
     partner1: "Tharani",
     partner2: "Surya",
     monogram: "T & S",
-    relationshipStartDate: "2023-04-14T19:30:00Z", // Customize as needed
-    anniversary: "April 14",
+    relationshipStartDate: "2024-03-31T19:30:00Z", // Customize as needed
+    anniversary: "March 31",
     favoriteQuote: "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.",
     quoteAuthor: "Maya Angelou",
   },
