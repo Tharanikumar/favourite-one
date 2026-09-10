@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Place } from "@/lib/types";
@@ -37,8 +37,52 @@ export function InteractiveMemoryMap({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const mapRef = useRef<HTMLDivElement | null>(null);
 
+  // Check if places are concentrated in a local/regional boundary
+  const isRegional = useMemo(() => {
+    if (places.length <= 1) return false;
+    const lngs = places.map((p) => p.lng);
+    const lats = places.map((p) => p.lat);
+    const lngSpan = Math.max(...lngs) - Math.min(...lngs);
+    const latSpan = Math.max(...lats) - Math.min(...lats);
+    return lngSpan < 45 && latSpan < 45;
+  }, [places]);
+
+  const regionalBounds = useMemo(() => {
+    if (!isRegional || places.length === 0) return null;
+    const lngs = places.map((p) => p.lng);
+    const lats = places.map((p) => p.lat);
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+    const lngSpan = Math.max(maxLng - minLng, 1);
+    const latSpan = Math.max(maxLat - minLat, 1);
+    const lngMargin = lngSpan * 0.35;
+    const latMargin = latSpan * 0.35;
+    return {
+      minLng: minLng - lngMargin,
+      maxLng: maxLng + lngMargin,
+      minLat: minLat - latMargin,
+      maxLat: maxLat + latMargin,
+    };
+  }, [isRegional, places]);
+
   // Projection: converts GPS lat/lng (-90..90, -180..180) to 0..1000 x 0..500 coordinates
   const projectCoordinates = (lat: number, lng: number) => {
+    if (isRegional && regionalBounds) {
+      const x =
+        ((lng - regionalBounds.minLng) /
+          (regionalBounds.maxLng - regionalBounds.minLng)) *
+          700 +
+        150;
+      // Invert lat for SVG y (higher lat is top / lower y)
+      const y =
+        380 -
+        ((lat - regionalBounds.minLat) /
+          (regionalBounds.maxLat - regionalBounds.minLat)) *
+          260;
+      return { x, y: Math.max(40, Math.min(460, y)) };
+    }
     const x = ((lng + 180) / 360) * 1000;
     // Mercator-like latitude scaling
     const latRad = (lat * Math.PI) / 180;
@@ -223,6 +267,8 @@ export function InteractiveMemoryMap({
           <span className="font-mono text-rose-700 text-[11px] font-medium">
             {selectedPlace
               ? `${selectedPlace.lat.toFixed(4)}° N, ${selectedPlace.lng.toFixed(4)}° E`
+              : isRegional
+              ? "Tamil Nadu Journey Map"
               : "Global Coordinate Matrix"}
           </span>
         </div>
