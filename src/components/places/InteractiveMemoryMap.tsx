@@ -25,17 +25,16 @@ interface InteractiveMemoryMapProps {
   onOpenDetail?: (place: Place) => void;
 }
 
-type MapLayerType = "pastel" | "osm" | "satellite" | "voyager";
+type MapLayerType = "topo" | "osm" | "satellite" | "hot" | "street";
 
 const TILE_PROVIDERS: Record<
   MapLayerType,
   { url: string; attribution: string; name: string }
 > = {
-  pastel: {
-    name: "Pastel Dream",
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  topo: {
+    name: "Romantic Topo",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+    attribution: "Tiles &copy; Esri",
   },
   osm: {
     name: "OpenStreetMap",
@@ -46,14 +45,18 @@ const TILE_PROVIDERS: Record<
   satellite: {
     name: "Satellite Imagery",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    attribution:
-      "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+    attribution: "Tiles &copy; Esri &mdash; Source: Esri, USGS, AeroGRID",
   },
-  voyager: {
-    name: "Voyager Road",
-    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+  hot: {
+    name: "Vibrant Warm",
+    url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, HOT',
+  },
+  street: {
+    name: "City Streets",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    attribution: "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ",
   },
 };
 
@@ -74,7 +77,7 @@ export function InteractiveMemoryMap({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const polylineRef = useRef<any>(null);
 
-  const [mapStyle, setMapStyle] = useState<MapLayerType>("pastel");
+  const [mapStyle, setMapStyle] = useState<MapLayerType>("topo");
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [isMapReady, setIsMapReady] = useState(false);
 
