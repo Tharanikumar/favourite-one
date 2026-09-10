@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -9,10 +10,27 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { MOCK_PLACES } from "@/lib/mockData";
 import { Place } from "@/lib/types";
-import { InteractiveMemoryMap } from "@/components/places/InteractiveMemoryMap";
 import { PlaceCard } from "@/components/places/PlaceCard";
 import { PlaceMemoryModal } from "@/components/places/PlaceMemoryModal";
 import { AddPlaceModal } from "@/components/places/AddPlaceModal";
+
+const InteractiveMemoryMap = dynamic(
+  () =>
+    import("@/components/places/InteractiveMemoryMap").then(
+      (mod) => mod.InteractiveMemoryMap
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[520px] sm:h-[620px] rounded-3xl bg-rose-50/60 border border-rose-200/50 flex flex-col items-center justify-center gap-3 text-rose-500 shadow-sm animate-pulse">
+        <Compass className="w-8 h-8 animate-spin-slow text-rose-400" />
+        <span className="font-mono text-xs uppercase tracking-widest font-semibold text-rose-600">
+          Loading Real Interactive Map...
+        </span>
+      </div>
+    ),
+  }
+);
 import {
   Compass,
   Search,

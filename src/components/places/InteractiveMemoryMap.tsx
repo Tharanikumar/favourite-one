@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import "leaflet/dist/leaflet.css";
 import { Place } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import {
@@ -80,6 +81,7 @@ export function InteractiveMemoryMap({
   // Initialize Leaflet Map
   useEffect(() => {
     let isMounted = true;
+    let handleResize: (() => void) | null = null;
 
     async function initMap() {
       if (!mapContainerRef.current || mapInstanceRef.current) return;
@@ -111,6 +113,25 @@ export function InteractiveMemoryMap({
       markersGroupRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
 
+      handleResize = () => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+        }
+      };
+      window.addEventListener("resize", handleResize);
+
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+        }
+      }, 100);
+
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+        }
+      }, 350);
+
       setIsMapReady(true);
     }
 
@@ -118,6 +139,9 @@ export function InteractiveMemoryMap({
 
     return () => {
       isMounted = false;
+      if (handleResize) {
+        window.removeEventListener("resize", handleResize);
+      }
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
