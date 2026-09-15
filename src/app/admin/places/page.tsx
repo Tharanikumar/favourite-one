@@ -39,10 +39,10 @@ export default function AdminPlacesPage() {
     setEditingPlace(null);
     setTitle("");
     setLocationName("");
-    setCity("");
-    setCountry("");
-    setLat(48.8566);
-    setLng(2.3522);
+    setCity("Karur");
+    setCountry("India");
+    setLat(10.9601);
+    setLng(78.0766);
     setVisitedDate(new Date().toISOString().split("T")[0]);
     setCategory("Travel");
     setDescription("");
@@ -214,6 +214,52 @@ export default function AdminPlacesPage() {
         size="md"
       >
         <form onSubmit={handleSave} className="space-y-4">
+          {/* Quick Tamil Nadu Presets */}
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 space-y-1.5">
+            <div className="text-[11px] font-mono text-rose-300 font-semibold flex items-center justify-between">
+              <span>Quick Tamil Nadu Presets:</span>
+              <span className="text-[10px] text-cream-400">Click to autofill GPS</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto">
+              {[
+                { name: "Karur", city: "Karur", lat: 10.9601, lng: 78.0766 },
+                { name: "Trichy", city: "Trichy", lat: 10.7905, lng: 78.7047 },
+                { name: "Chennai", city: "Chennai", lat: 13.0827, lng: 80.2707 },
+                { name: "Chidambaram", city: "Chidambaram", lat: 11.3992, lng: 79.6936 },
+                { name: "Palani", city: "Palani", lat: 10.4509, lng: 77.5188 },
+                { name: "Coimbatore", city: "Coimbatore", lat: 11.0168, lng: 76.9558 },
+                { name: "Madurai", city: "Madurai", lat: 9.9252, lng: 78.1198 },
+                { name: "Salem", city: "Salem", lat: 11.6643, lng: 78.146 },
+                { name: "Ooty", city: "Ooty", lat: 11.4102, lng: 76.695 },
+                { name: "Kodaikanal", city: "Kodaikanal", lat: 10.2381, lng: 77.4892 },
+                { name: "Kanyakumari", city: "Kanyakumari", lat: 8.0883, lng: 77.5385 },
+                { name: "Rameswaram", city: "Rameswaram", lat: 9.2876, lng: 79.3129 },
+                { name: "Pondicherry", city: "Pondicherry", lat: 11.9416, lng: 79.8083 },
+              ].map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => {
+                    setCity(preset.city);
+                    setCountry("India");
+                    setLat(preset.lat);
+                    setLng(preset.lng);
+                    if (!locationName) {
+                      setLocationName(`${preset.name}, Tamil Nadu`);
+                    }
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-mono transition-all ${
+                    city.toLowerCase() === preset.city.toLowerCase()
+                      ? "bg-rose-500 text-white font-bold"
+                      : "bg-universe-950 text-cream-300 hover:text-white border border-white/[0.1]"
+                  }`}
+                >
+                  {preset.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="block text-xs uppercase tracking-wider text-cream-300 mb-1.5 font-sans">
               Place Title *

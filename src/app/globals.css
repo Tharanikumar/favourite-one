@@ -1,3 +1,5 @@
+@import "leaflet/dist/leaflet.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -145,15 +147,38 @@ body {
   }
 }
 
-/* Leaflet Map Customizations */
-@import "leaflet/dist/leaflet.css";
-
+/* Leaflet Map Customizations & Tile Fixes */
 .leaflet-container {
   font-family: inherit;
-  background-color: #FFF0F3 !important;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  background-color: #dbe7ec !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10;
+  outline: none;
+}
+
+/* Crucial: Prevent Tailwind CSS preflight from resizing or clipping Leaflet tiles */
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile {
+  visibility: inherit !important;
 }
 
 .custom-romantic-pin {
@@ -170,19 +195,20 @@ body {
 }
 
 .custom-romantic-pin .pin-label {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(244, 114, 182, 0.5);
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid rgba(244, 114, 182, 0.6);
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.2);
   color: #881337;
   font-weight: 700;
   font-size: 11px;
-  padding: 2px 8px;
+  padding: 2.5px 9px;
   border-radius: 9999px;
   white-space: nowrap;
-  margin-bottom: 4px;
-  backdrop-filter: blur(8px);
-  letter-spacing: 0.025em;
-  transition: all 0.2s ease;
+  margin-bottom: 5px;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.02em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
 }
 
 .custom-romantic-pin:hover .pin-label,
@@ -190,28 +216,29 @@ body {
   background: #FFF1F2;
   border-color: #E11D48;
   color: #9F1239;
-  transform: scale(1.08);
-  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.25);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.35);
 }
 
 .custom-romantic-pin .pin-core {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, #FF6B8B 0%, #FF2A6D 100%);
-  border: 2.5px solid #FFFFFF;
-  box-shadow: 0 4px 14px rgba(255, 42, 109, 0.45);
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 16px rgba(255, 42, 109, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .custom-romantic-pin:hover .pin-core,
 .custom-romantic-pin.is-selected .pin-core {
-  transform: scale(1.15);
-  box-shadow: 0 6px 20px rgba(255, 42, 109, 0.6);
+  transform: scale(1.2);
+  box-shadow: 0 8px 24px rgba(255, 42, 109, 0.7);
+  border-color: #FFF1F2;
 }
 
 .custom-romantic-pin .pin-dot {
@@ -223,22 +250,22 @@ body {
 
 .custom-romantic-pin .pin-pulse {
   position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 36px;
-  height: 36px;
+  top: -8px;
+  left: -8px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: rgba(255, 42, 109, 0.3);
+  background: rgba(255, 42, 109, 0.35);
   animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
   pointer-events: none;
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(255, 255, 255, 0.96) !important;
-  backdrop-filter: blur(14px) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(244, 114, 182, 0.4) !important;
   border-radius: 1.25rem !important;
-  box-shadow: 0 16px 40px -8px rgba(244, 63, 94, 0.22) !important;
+  box-shadow: 0 20px 45px -8px rgba(225, 29, 72, 0.25) !important;
   padding: 0 !important;
   overflow: hidden !important;
 }
@@ -249,7 +276,7 @@ body {
 }
 
 .leaflet-popup-tip {
-  background: rgba(255, 255, 255, 0.96) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
   border: 1px solid rgba(244, 114, 182, 0.4) !important;
 }
 

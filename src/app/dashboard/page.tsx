@@ -17,6 +17,8 @@ import { AmbientSoundPlayer } from "@/components/ui/AmbientSoundPlayer";
 import { OpeningExperience } from "@/components/intro";
 import { ConstellationCards } from "@/components/dashboard/ConstellationCards";
 import { CosmicNavMenu } from "@/components/layout/CosmicNavMenu";
+import { CoupleProfileDropdown } from "@/components/dashboard/CoupleProfileDropdown";
+import { SettingsModal } from "@/components/dashboard/SettingsModal";
 import {
   Clock,
   Camera,
@@ -28,7 +30,6 @@ import {
   Search,
   Bell,
   Sparkles,
-  ChevronDown,
   MessageCircle,
 } from "lucide-react";
 
@@ -43,6 +44,7 @@ export default function DashboardPage() {
   const [isAddLoveReasonOpen, setIsAddLoveReasonOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Form states
@@ -113,26 +115,14 @@ export default function DashboardPage() {
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF2A6D] ring-2 ring-white animate-pulse" />
               </button>
 
-              {/* Partner Profile Badge */}
-              <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-rose-200/60 shadow-sm">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-rose-300 shadow-sm">
-                  <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=85"
-                    alt={APP_CONFIG.couple.partner1}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-xs font-semibold text-charcoal-900 leading-tight">
-                    {APP_CONFIG.couple.partner1} &amp; {APP_CONFIG.couple.partner2}
-                  </span>
-                  <span className="text-[10px] text-rose-500 font-mono flex items-center gap-0.5">
-                    Our Little Universe
-                  </span>
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-charcoal-400 ml-0.5" />
-              </div>
+              {/* Couple Profile Dropdown with Full Features Menu */}
+              <CoupleProfileDropdown
+                onOpenIntro={() => setShowIntro(true)}
+                onOpenWriteLetter={() => setIsWriteLetterOpen(true)}
+                onOpenAddMemory={() => setIsAddMemoryOpen(true)}
+                onOpenAddReason={() => setIsAddLoveReasonOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
+              />
             </div>
           </div>
 
@@ -372,8 +362,8 @@ export default function DashboardPage() {
                   <div className="absolute top-0 right-4 w-44 sm:w-52 aspect-[4/5] bg-white p-2.5 pb-8 rounded-xl shadow-lg transform rotate-[6deg] border border-stone-200 pointer-events-none opacity-80">
                     <div className="relative w-full h-full rounded-lg overflow-hidden bg-stone-100">
                       <Image
-                        src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80"
-                        alt="First café coffee date"
+                        src="/images/our-first-date.jpg"
+                        alt="First date road trip journey"
                         fill
                         className="object-cover"
                       />
@@ -443,10 +433,8 @@ export default function DashboardPage() {
           <ConstellationCards />
         </div>
 
-        {/* 7. MOBILE BOTTOM NAV (Mobile screens) */}
-        <div className="lg:hidden">
-          <MobileBottomNav />
-        </div>
+        {/* 7. FLOATING GLASS DOCK NAVIGATION */}
+        <MobileBottomNav />
 
         {/* ================================================================= */}
         {/* 8. INTERACTIVE MODALS                                             */}
@@ -756,6 +744,12 @@ export default function DashboardPage() {
             </div>
           </div>
         </Modal>
+
+        {/* Settings Modal */}
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
       </div>
     </PageTransition>
   );
