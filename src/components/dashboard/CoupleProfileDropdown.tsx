@@ -97,10 +97,10 @@ export function CoupleProfileDropdown({
         {/* Avatar circle with soft pink ring */}
         <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-rose-300 shadow-sm shrink-0 group-hover:scale-105 transition-transform">
           <Image
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=85"
+            src="/images/avatar-tharani.jpg"
             alt={APP_CONFIG.couple.partner1}
             fill
-            className="object-cover"
+            className="object-cover object-top"
           />
         </div>
 
@@ -147,18 +147,18 @@ export function CoupleProfileDropdown({
                   <div className="flex items-center -space-x-2">
                     <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-white shadow-md">
                       <Image
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=85"
+                        src="/images/avatar-tharani.jpg"
                         alt={APP_CONFIG.couple.partner1}
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                       />
                     </div>
                     <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-white shadow-md">
                       <Image
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=85"
+                        src="/images/avatar-surya.jpg"
                         alt={APP_CONFIG.couple.partner2}
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                       />
                     </div>
                   </div>

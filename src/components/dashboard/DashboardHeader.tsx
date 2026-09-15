@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { APP_CONFIG } from "@/lib/constants";
@@ -44,11 +45,21 @@ export function DashboardHeader() {
           {/* Center / Couple Avatar Indicator */}
           <div className="hidden md:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/90 border border-universe-750/70 shadow-glass">
             <div className="flex -space-x-2 overflow-hidden">
-              <div className="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-rose-500/20 text-rose-700 font-serif text-[11px] font-semibold flex items-center justify-center">
-                {APP_CONFIG.couple.partner1[0]}
+              <div className="relative h-6 w-6 rounded-full ring-2 ring-white overflow-hidden shadow-xs">
+                <Image
+                  src="/images/avatar-tharani.jpg"
+                  alt={APP_CONFIG.couple.partner1}
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <div className="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-peach-500/30 text-rose-700 font-serif text-[11px] font-semibold flex items-center justify-center">
-                {APP_CONFIG.couple.partner2[0]}
+              <div className="relative h-6 w-6 rounded-full ring-2 ring-white overflow-hidden shadow-xs">
+                <Image
+                  src="/images/avatar-surya.jpg"
+                  alt={APP_CONFIG.couple.partner2}
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
             </div>
             <span className="text-xs text-cream-100 font-medium font-sans">

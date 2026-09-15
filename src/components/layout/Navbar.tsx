@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -168,8 +169,13 @@ export function Navbar() {
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-xl border border-universe-750/70 hover:border-rose-400/50 text-xs text-cream-100 shadow-glass transition-all"
                 >
-                  <div className="w-5 h-5 rounded-full bg-rose-500/15 text-rose-700 flex items-center justify-center font-serif text-[11px] font-bold">
-                    {displayName.charAt(0).toUpperCase()}
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden border border-rose-300 shadow-xs shrink-0">
+                    <Image
+                      src={displayName.toLowerCase().includes("surya") ? "/images/avatar-surya.jpg" : "/images/avatar-tharani.jpg"}
+                      alt={displayName}
+                      fill
+                      className="object-cover object-top"
+                    />
                   </div>
                   <span className="hidden sm:inline font-sans text-xs font-medium">{displayName}</span>
                   {isAdmin && (

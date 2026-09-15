@@ -19,21 +19,21 @@ export const DEMO_PROFILES: Record<string, DemoUser> = {
     email: "tharani@universe.love",
     name: "Tharani",
     role: "partner",
-    avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    avatar_url: "/images/avatar-tharani.jpg",
   },
   surya: {
     id: "00000000-0000-0000-0000-000000000002",
     email: "surya@universe.love",
     name: "Surya",
     role: "partner",
-    avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    avatar_url: "/images/avatar-surya.jpg",
   },
   admin: {
     id: "00000000-0000-0000-0000-000000000003",
     email: "admin@universe.love",
     name: "Sanctuary Curator",
     role: "admin",
-    avatar_url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    avatar_url: "/images/avatar-couple.jpg",
   },
   // Backward compatibility aliases
   alex: {
@@ -41,14 +41,14 @@ export const DEMO_PROFILES: Record<string, DemoUser> = {
     email: "tharani@universe.love",
     name: "Tharani",
     role: "partner",
-    avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    avatar_url: "/images/avatar-tharani.jpg",
   },
   maya: {
     id: "00000000-0000-0000-0000-000000000002",
     email: "surya@universe.love",
     name: "Surya",
     role: "partner",
-    avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    avatar_url: "/images/avatar-surya.jpg",
   },
 };
 

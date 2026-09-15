@@ -63,12 +63,12 @@ export function TimelineEventCard({ event, onClick }: TimelineEventCardProps) {
 
           {/* Optional Thumbnail Image */}
           {event.image_url && (
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden shadow-md">
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden shadow-md">
               <Image
                 src={event.image_url}
                 alt={event.title}
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-universe-950/70 via-transparent to-transparent opacity-60" />
             </div>

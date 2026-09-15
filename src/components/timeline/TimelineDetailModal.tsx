@@ -54,12 +54,12 @@ export function TimelineDetailModal({ event, onClose }: TimelineDetailModalProps
       <div className="space-y-6">
         {/* Image Gallery Showcase */}
         {images.length > 0 && (
-          <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-universe-950 border border-white/[0.08] shadow-inner group">
+          <div className="relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[16/10] bg-universe-950 border border-white/[0.08] shadow-inner group">
             <Image
               src={images[activeImageIndex]}
               alt={event.title}
               fill
-              className="object-cover transition-all duration-500"
+              className="object-cover object-top transition-all duration-500"
             />
 
             {/* Gallery Navigation Controls */}

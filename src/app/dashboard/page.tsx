@@ -214,10 +214,10 @@ export default function DashboardPage() {
                 {/* Partner Avatar Profile */}
                 <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-rose-400 shadow-sm">
                   <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=85"
+                    src="/images/avatar-tharani.jpg"
                     alt={APP_CONFIG.couple.partner1}
                     fill
-                    className="object-cover"
+                    className="object-cover object-top"
                   />
                 </div>
               </div>
